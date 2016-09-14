@@ -1,0 +1,152 @@
+#kaart {
+	margin-top: 100px;
+}
+
+.gedimd {
+	opacity: 0.5;
+}
+
+.leaflet-top.leaflet-left, .leaflet-top.leaflet-right  {
+	margin-top: 60px;
+}
+
+#kaart . * {
+	z-index: 11;
+}
+
+.start_page_caption {
+	padding: 10px;
+  	opacity: 0.8;
+  	background-color: #E9E9E9;
+  	border-radius: 10px;
+  	width: 25%;
+  	margin-left: auto;
+  	margin-right: auto;
+  	color: #5F5F61;
+}
+
+.start_page_caption_tekst {
+	opacity: 1.0;
+}
+
+body {
+	overflow: hidden;
+}
+
+#logo {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+#filter {
+	width: 300px;
+	position: absolute;
+	bottom: 50px;
+	background-color: #222222;
+	color: #999999;
+	padding: 10px;
+	font-size: 14px;
+	border-radius: 0 25px 25px 0;
+	text-align: right;
+	border-right: solid 3px #999999;
+	border-top: solid 3px #999999;
+	border-bottom: solid 3px #999999;
+	z-index: 100;
+}
+
+.filterinactive {
+	opacity: 0.5;
+}
+
+#filtermenu {
+	width: 120px;
+	padding: 5px;
+	position: absolute;
+	bottom: 50px;
+	background-color: #222222;
+	color: #999999;
+	text-align: right;
+	border-right: solid 3px #999999;
+	border-top: solid 3px #999999;
+	border-bottom: solid 3px #999999;
+	border-radius: 0 25px 25px 0;
+	z-index: 100;
+}
+
+
+#filter ul {
+	list-style-type: none;
+	padding-left: 0px;
+	text-align: left;
+}
+
+#filter ul li ul li {
+	line-height: 25px;
+}
+
+label {
+	display: inline;
+}
+
+#filter ul li h4 {
+	color: #dddddd;
+}
+
+
+#legenda {
+	width: 200px;
+	height: 200px;
+	position: absolute;
+	bottom: 50px;
+	right: 0px;
+	background-color: #222222;
+	color: #999999;
+	padding: 10px;
+	font-size: 14px;
+	border-radius: 25px 0 0 25px ;
+	border-left: solid 3px #999999;
+	border-top: solid 3px #999999;
+	border-bottom: solid 3px #999999;
+	z-index: 100;
+}
+
+#legenda img {
+	width: 32px;
+}
+
+#legendamenu {
+	width: 120px;
+	padding: 5px;
+	position: absolute;
+	bottom: 50px;
+	right: 0px;
+	background-color: #222222;
+	color: #999999;
+	border-left: solid 3px #999999;
+	border-top: solid 3px #999999;
+	border-bottom: solid 3px #999999;
+	border-radius: 25px 0 0 25px ;
+	z-index: 100;
+}
+
+#legenda ul {
+	list-style-type: none;
+	padding-left: 0px;
+}
+
+#legenda ul li {
+	line-height: 45px;
+}
+
+.rechtsuitlijnen {
+	text-align: right;
+}
+
+#contact {
+	z-index: 101;
+}
+
+.leaflet-popup-content-wrapper {
+	z-index: 100;
+}
