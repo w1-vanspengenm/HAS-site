@@ -63,9 +63,25 @@ var panZoomOptions = {
 
 $(document).ready(function ()
 {
+    var serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:tbl_Landen&outputFormat=application%2Fjson' };
+    $.ajax(
+    {
+        url: 'geoproxy.php',
+        dataType: 'json',
+        method: 'post',
+        data: serviceName
+    })
+    .done(function (data)
+    {
+        landenData = data;
+        initMap();
 
+    })
+    .error(function ()
+    {
+        alert("Landen json niet opgehaald");
+    });
 });
-
 function showLegenda()
 {
     $('#legendamenu').hide();
@@ -212,6 +228,7 @@ function switchMarkers(checkb)
 
 function initMap()
 {
+    console.log(landenData);
     //initialiseren van de kaart
     kaart = new L.Map('kaart', mapOptions);
     oms = new OverlappingMarkerSpiderfier(kaart, {
