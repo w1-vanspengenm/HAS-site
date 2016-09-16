@@ -268,7 +268,7 @@ function initMap()
 
 //    kaart.addLayer(Esri_WorldGrayCanvas);
 
-    bluemarble = new L.TileLayer.WMS("http://maps.opengeo.org/geowebcache/service/wms", {
+   bluemarble = new L.TileLayer.WMS("http://maps.opengeo.org/geowebcache/service/wms", {
         layers: 'bluemarble',
         attribution: "&copy; NASA Blue Marble",
         minZoom: 2,
