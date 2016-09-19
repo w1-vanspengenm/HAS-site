@@ -1,4 +1,6 @@
 var landenData;
+var opleidingData;
+var serviceName;
 var kaart;
 var oms;
 var taal = "EN";
@@ -39,9 +41,10 @@ var mapOptions = {
   zoomAnimation: true,
   zoomAnimationTreshold: 5,
   zoomControl: false,
-  center: [0, 0],
+  center: [0,0],
   zoom: 2,
-  minZoom: 2
+  minZoom: 2,
+  worldCopyJump:false
 };
 
 var panOptions = {
@@ -63,7 +66,7 @@ var panZoomOptions = {
 
 $(document).ready(function ()
 {
-    var serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:tbl_Landen&outputFormat=application%2Fjson' };
+    serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:tbl_Landen&outputFormat=application%2Fjson' };
     $.ajax(
     {
         url: 'geoproxy.php',
@@ -74,14 +77,31 @@ $(document).ready(function ()
     .done(function (data)
     {
         landenData = data;
-        initMap();
-
+        serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:tbl_Opleidingen&outputFormat=application%2Fjson' };
+        $.ajax(
+        {
+            url: 'geoproxy.php',
+            dataType: 'json',
+            method: 'post',
+            data: serviceName
+        })
+        .done(function (data)
+        {
+            opleidingData = data;
+            initMap();
+        })
+        .error(function ()
+        {
+            alert("Opleidingen json niet opgehaald");
+        });
     })
     .error(function ()
     {
         alert("Landen json niet opgehaald");
     });
+
 });
+
 function showLegenda()
 {
     $('#legendamenu').hide();
@@ -229,8 +249,9 @@ function switchMarkers(checkb)
 function initMap()
 {
     console.log(landenData);
+    console.log(opleidingData);
     //initialiseren van de kaart
-    kaart = new L.Map('kaart', mapOptions);
+    kaart = new L.Map('kaart', mapOptions); 
     oms = new OverlappingMarkerSpiderfier(kaart, {
         keepSpiderfied: true
     });
@@ -256,6 +277,10 @@ function initMap()
 
     // start the map in 0, 0
     kaart.setView([0, 0], 2, panZoomOptions);
+    // stel kaartgrenzen in
+    var bounds = kaart.getBounds();
+    console.log(bounds);
+    kaart.setMaxBounds(bounds);
 
 
     var Esri_WorldGrayCanvas = L.esri.basemapLayer("Gray");
@@ -542,8 +567,8 @@ function initMap()
 
             }
             oms.addMarker(marker);
-            makeMenu();
         });
+        makeMenu();
     })
     .error(function ()
     {
@@ -598,8 +623,9 @@ function initMap()
 
 function initZoom()
 {
-    kaart.setZoom(2);
+   kaart.setZoom(2);
 }
+
 function makeMenu ()
 {
 
@@ -607,7 +633,7 @@ function makeMenu ()
     {
         case "NL":
             $('#kaart').append('<div id="legendamenu" onclick="showLegenda()"><h4><i class="glyphicon glyphicon-chevron-left"></i> Legenda</h4></div>');
-            $('#kaart').append('<div id="legenda" onclick="hideLegenda()"><h4> <i class="glyphicon glyphicon-remove-circle"></i> Legenda</h4><ul><li><img src="images\\Stage.png" /> Stages</li><li><img src="images\\Medewerker.png" /> Medewerkers</li><li><img src="images\\Studie.png" /> Studie</li></ul></div>');
+            $('#kaart').append('<div id="legenda" onclick="hideLegenda()"><h4><i class="glyphicon glyphicon-remove-circle"></i> Legenda</h4><ul><li><img src="images\\Stage.png" /> Stages</li><li><img src="images\\Medewerker.png" /> Medewerkers</li><li><img src="images\\Studie.png" /> Studie</li></ul></div>');
             hideLegenda();
             var filterTekst = '<div id="filter" ><h4>Filter <span onclick="hideFilter()"><i class="glyphicon glyphicon-remove-circle"></i></span></h4>';
             filterTekst += '<ul><li><h4>Achtergrondkaarten</h4><ul>';
