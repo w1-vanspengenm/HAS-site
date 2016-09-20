@@ -127,7 +127,6 @@ function getOpleidingNaam(opleidingcode)
         }
     });
     return opleidingnaam;
-    console.log(getOpleidingNaam)
 }
 
 function showLegenda()
@@ -272,8 +271,6 @@ function switchMarkers(checkb)
 
 function initMap()
 {
-    console.log(landenData);
-    console.log(opleidingData);
     //initialiseren van de kaart
     kaart = new L.Map('kaart', mapOptions); 
     oms = new OverlappingMarkerSpiderfier(kaart, {
@@ -461,7 +458,6 @@ function initMap()
     {
         $.each(data.features, function (i, stages)
         {
-            console.log(stages);
             var marker = new L.Marker([stages.properties.Latitude, stages.properties.Longitude], {
                 icon: stageIcon
             }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
