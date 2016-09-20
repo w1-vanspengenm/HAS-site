@@ -43,12 +43,6 @@ var mapOptions = {
   worldCopyJump:true
 };
 
-var panOptions = {
-    animate: true,
-    duration: 2.0,
-    easeLinearity: 0.000001
-};
-
 var zoomOptions = {
     animate: true
 };
@@ -339,12 +333,6 @@ function initMap()
         iconSize : [32, 32],
         iconAnchor : [15, 32]
     });
-
-
-    //code die er voor zorgt dat hij automatisch naar de laag zoomt als je een laag inschakelt
-    kaart.on('overlayadd', function(laagevent) {
-    });
-
     medewerkersLayer = new L.FeatureGroup();
     studieLayer = new L.FeatureGroup();
 
