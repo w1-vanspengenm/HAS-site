@@ -3,10 +3,8 @@ var opleidingData;
 var serviceName;
 var kaart;
 var oms;
-var taal = "EN";
+var taal;
 var grayGroupLayer;
-var osmGray;
-var bluemarble;
 var satellietLayer;
 var studentenBAcluster;
 var studentenDVcluster;
@@ -31,9 +29,7 @@ var studentenTAaantal = 0;
 var studentenTBaantal = 0;
 var studentenVMaantal = 0;
 var medewerkersAantal = 0;
-var studieAantal = 0;
 var medewerkersLayer;
-var studieLayer;
 var popupOffset = new L.Point(0,-20);
 
 
@@ -44,7 +40,7 @@ var mapOptions = {
   center: [0,0],
   zoom: 2,
   minZoom: 2,
-  worldCopyJump:false
+  worldCopyJump:true
 };
 
 var panOptions = {
@@ -54,13 +50,6 @@ var panOptions = {
 };
 
 var zoomOptions = {
-    animate: true
-};
-
-var panZoomOptions = {
-    reset: false,
-    pan: panOptions,
-    zoom: zoomOptions,
     animate: true
 };
 
@@ -102,6 +91,51 @@ $(document).ready(function ()
 
 });
 
+function getLandNaam(landcode)
+{
+    var landnaam;
+    $.each(landenData.features, function (i, landen)
+    {
+        if ("tbl_Landen." + landcode == landen.id)
+        {
+            switch (taal)
+            {
+                case "NL":
+                    landnaam = landen.properties.Landnaam_nl_html
+                    break;
+                case "EN":
+                    landnaam = landen.properties.Landnaam_en_html
+                    break;
+            }
+            return false; // stop each
+        }
+    });
+    return landnaam;
+}
+
+function getOpleidingNaam(opleidingcode)
+{
+    var opleidingnaam;
+    $.each(opleidingData.features, function (i, opleidingen)
+    {
+        if ("tbl_Opleidingen." + opleidingcode == opleidingen.id)
+        {
+            switch (taal)
+            {
+                case "NL":
+                    opleidingnaam = opleidingen.properties.Opleidingsnaam_nl
+                    break;
+                case "EN":
+                    opleidingnaam = opleidingen.properties.Opleidingsnaam_en
+                    break;
+            }
+            return false; // stop each
+        }
+    });
+    return opleidingnaam;
+    console.log(getOpleidingNaam)
+}
+
 function showLegenda()
 {
     $('#legendamenu').hide();
@@ -131,16 +165,12 @@ function switchAchtergrond(radio)
     if (radio.checked && radio.id == "satelliet")
     {
         kaart.removeLayer(grayGroupLayer);
-//        kaart.removeLayer(osmGray);
-//        kaart.addLayer(bluemarble);
         kaart.addLayer(satellietLayer);
     }
     if (radio.checked && radio.id == "grijs")
     {
-//        kaart.removeLayer(bluemarble);
         kaart.removeLayer(satellietLayer);
         kaart.addLayer(grayGroupLayer);
-//        kaart.addLayer(osmGray);
     }
 }
 
@@ -269,36 +299,14 @@ function initMap()
         showFilter();
     });
 
-    // Gebruik Open Street Map als kaart-laag
-    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var osmAttrib='Map data &copy; OpenStreetMap contributors';
-    var osm = new L.TileLayer(osmUrl, {minZoom: 1, maxZoom: 16, attribution: osmAttrib});
-    osmGray = new L.TileLayer.Grayscale(osmUrl, {minZoom: 1, maxZoom: 16, attribution: osmAttrib});
-
-    // start the map in 0, 0
-    kaart.setView([0, 0], 2, panZoomOptions);
-    // stel kaartgrenzen in
-    var bounds = kaart.getBounds();
-    console.log(bounds);
-    kaart.setMaxBounds(bounds);
-
 
     var Esri_WorldGrayCanvas = L.esri.basemapLayer("Gray");
     var Esri_WorldGrayCanvasLabels = L.esri.basemapLayer("GrayLabels");
 
     grayGroupLayer = new L.LayerGroup([Esri_WorldGrayCanvas, Esri_WorldGrayCanvasLabels]);
     kaart.addLayer(grayGroupLayer);
-//    kaart.addLayer(osmGray);
 
-
-//    kaart.addLayer(Esri_WorldGrayCanvas);
-
-   bluemarble = new L.TileLayer.WMS("http://maps.opengeo.org/geowebcache/service/wms", {
-        layers: 'bluemarble',
-        attribution: "&copy; NASA Blue Marble",
-        minZoom: 2,
-        maxZoom: 16
-    });
+  
 
 //    satellietLayer = new L.Google("SATELLITE", {crs: L.CRS.EPSG3395} );   // 4352
     satellietLayer = L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
@@ -335,7 +343,6 @@ function initMap()
 
     //code die er voor zorgt dat hij automatisch naar de laag zoomt als je een laag inschakelt
     kaart.on('overlayadd', function(laagevent) {
-//        kaart.fitBounds(laagevent.layer.getBounds());
     });
 
     medewerkersLayer = new L.FeatureGroup();
@@ -346,91 +353,45 @@ function initMap()
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenBAcluster = new L.FeatureGroup();
-    // studentenBAcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenDVcluster = new L.FeatureGroup();
-    // studentenDVcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
 
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenFDcluster = new L.FeatureGroup();
-    // studentenFDcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenGMDcluster = new L.FeatureGroup();
-    // studentenGMDcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenHBMcluster = new L.FeatureGroup();
-    // studentenHBMcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenIFAcluster = new L.FeatureGroup();
-    // studentenIFAcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
-//
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenMKcluster = new L.FeatureGroup();
-    // studentenMKcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenPVcluster = new L.FeatureGroup();
-    // studentenPVcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenTAcluster = new L.FeatureGroup();
-    // studentenTAcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
-
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenTBcluster = new L.FeatureGroup();
-    // studentenTBcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenVMcluster = new L.FeatureGroup();
-    // studentenVMcluster = new L.MarkerClusterGroup({
-        // spiderfyOnMaxZoom : true,
-        // showCoverageOnHover : false
-    // });
 
 
 
@@ -496,9 +457,7 @@ function initMap()
                 break;
 
         }
-//        studieLayer.addLayer(marker);
         oms.addMarker(marker);
-//        studieAantal++;
     });
 
     var serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:huidige%20stages&outputFormat=application%2Fjson'};
@@ -517,7 +476,7 @@ function initMap()
             console.log(stages);
             var marker = new L.Marker([stages.properties.Latitude, stages.properties.Longitude], {
                 icon: stageIcon
-            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + stages.properties.Landcode + "<br>" + stages.properties.Opleidingscode, { offset: popupOffset });
+            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
             switch (stages.properties.Opleidingscode)
             {
                 case 'BA':
@@ -587,14 +546,7 @@ function initMap()
     kaart.addLayer(studentenTBcluster);
     kaart.addLayer(studentenVMcluster);
     kaart.addLayer(medewerkersLayer);
-    kaart.addLayer(studieLayer);
 
-
-
-    //de basemaps die komen te staan in het menu rechtsbovenin waar je uit kan kiezen
-    var baseMap = {
-         "Grijze achtergrondkaart": grayGroupLayer,
-         "Sateliet achtergrond": bluemarble
     };
 
     //de layers die je aan en uit kan zetten in het menu rechtsonderin
@@ -612,18 +564,9 @@ function initMap()
 
         }
     };
-    var zoekLayer = new L.LayerGroup();
-    zoekLayer.addLayer(studentenBAcluster);
-
-//    L.control.groupedLayers(baseMap, categorien, {position: 'topleft'}).addTo(kaart);
-
-    //hier wordt de schaalbalk toegevoegd
-//    L.control.scale().addTo(kaart);
-}
-
 function initZoom()
 {
-   kaart.setZoom(2);
+    kaart.setZoom(2);
 }
 
 function makeMenu ()
