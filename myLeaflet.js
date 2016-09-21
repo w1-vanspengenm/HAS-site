@@ -379,74 +379,107 @@ function initMap()
     studentenVMcluster = new L.FeatureGroup();
 
 
-
-    $.each(medewerkers.features, function(i, medewerker) {
-       var marker = new L.Marker([medewerker.geometry.coordinates[1], medewerker.geometry.coordinates[0]], {
-            icon : medewerkerIcon
-        }).bindPopup(medewerker.properties.medewerkernaam+"<br>"+medewerker.properties.bezoeklocatie+"<br>"+medewerker.properties.bezoekplaats+"<br>"+medewerker.properties.bezoekland, { offset: popupOffset });
-        medewerkersLayer.addLayer(marker);
-        oms.addMarker(marker);
-        medewerkersAantal++;
-    });
-
-
-    $.each(studenten.features, function(i, student) {
-       var marker = new L.Marker([student.geometry.coordinates[1], student.geometry.coordinates[0]], {
-            icon : studentIcon
-        }).bindPopup(student.properties.opleiding+"<br>"+student.properties.studentnaam+"<br>"+student.properties.instituutnaam+"<br>"+student.properties.instituutplaats+"<br>"+student.properties.instituutland, { offset: popupOffset });
-        switch (student.properties.opleiding)
+    serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Actuele%20medewerkers%20in%20het%20buitenland&outputFormat=application%2Fjson'};
+    //Lezen JSON alle medewerkers
+    $.ajax(
+    {
+        url: 'geoproxy.php',
+        dataType: 'json',
+        method: 'post',
+        data: serviceName
+    })
+    .done(function (data)
+    {
+        $.each(data.features, function (i, medewerker)
         {
-            case 'BA':
-                studentenBAcluster.addLayer(marker);
-                studentenBAaantal++;
-                break;
-            case 'DV':
-                studentenDVcluster.addLayer(marker);
-                studentenDVaantal++;
-                break;
-            case 'FD':
-                studentenFDcluster.addLayer(marker);
-                studentenFDaantal++;
-                break;
-            case 'GM':
-                studentenGMDcluster.addLayer(marker);
-                studentenGMDaantal++;
-                break;
-            case 'HBM':
-                studentenHBMcluster.addLayer(marker);
-                studentenHBMaantal++;
-                break;
-            case 'IFA':
-                studentenIFAcluster.addLayer(marker);
-                studentenIFAaantal++;
-                break;
-            case 'MK':
-                studentenMKcluster.addLayer(marker);
-                studentenMKaantal++;
-                break;
-            case 'PV':
-                studentenPVcluster.addLayer(marker);
-                studentenPVaantal++;
-                break;
-            case 'TA':
-                studentenTAcluster.addLayer(marker);
-                studentenTAaantal++;
-                break;
-            case 'TB':
-                studentenTBcluster.addLayer(marker);
-                studentenTBaantal++;
-                break;
-            case 'VM':
-                studentenVMcluster.addLayer(marker);
-                studentenVMaantal++;
-                break;
-
-        }
-        oms.addMarker(marker);
+            var marker = new L.Marker([medewerker.properties.Latitude, medewerker.properties.Longitude], {
+                icon: medewerkerIcon
+            }).bindPopup(medewerker.properties.Voornaam + " " + medewerker.properties.Achternaam + "<br>" + medewerker.properties.Omschrijving + "<br>" + medewerker.properties.Plaats + "<br>" + getLandNaam(medewerker.properties.Landcode), { offset: popupOffset });
+            medewerkersLayer.addLayer(marker);
+            oms.addMarker(marker);
+            medewerkersAantal++;
+        });
+    })
+    .error(function ()
+    {
+        alert("fout opgetreden bij laden van medewerkers uit database")
     });
 
-    var serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:huidige%20stages&outputFormat=application%2Fjson'};
-    //Lezen geoJSON alle studenten
+    
+    serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Studies%20in%20het%20buitenland&outputFormat=application%2Fjson'};
+    //Lezen JSON alle studies in het buitenland
+    $.ajax(
+    {
+        url: 'geoproxy.php',
+        dataType: 'json',
+        method: 'post',
+        data: serviceName
+    })
+    .done(function (data)
+    {
+        $.each(data.features, function (i, student)
+        {
+            var marker = new L.Marker([student.properties.Latitude, student.properties.Longitude], {
+                icon: studentIcon
+            }).bindPopup(student.properties.Voornaam + " " + student.properties.Achternaam + "<br>" + student.properties.Instelling_naam + "<br>" + student.properties.Plaats + "<br>" + getLandNaam(student.properties.Landcode) + "<br>" + getOpleidingNaam(student.properties.Opleidingscode), { offset: popupOffset });
+            switch (student.properties.Opleidingscode)
+            {
+                case 'BA':
+                    studentenBAcluster.addLayer(marker);
+                    studentenBAaantal++;
+                    break;
+                case 'DV':
+                    studentenDVcluster.addLayer(marker);
+                    studentenDVaantal++;
+                    break;
+                case 'FD':
+                    studentenFDcluster.addLayer(marker);
+                    studentenFDaantal++;
+                    break;
+                case 'GM':
+                    studentenGMDcluster.addLayer(marker);
+                    studentenGMDaantal++;
+                    break;
+                case 'HBM':
+                    studentenHBMcluster.addLayer(marker);
+                    studentenHBMaantal++;
+                    break;
+                case 'IFA':
+                    studentenIFAcluster.addLayer(marker);
+                    studentenIFAaantal++;
+                    break;
+                case 'MK':
+                    studentenMKcluster.addLayer(marker);
+                    studentenMKaantal++;
+                    break;
+                case 'PV':
+                    studentenPVcluster.addLayer(marker);
+                    studentenPVaantal++;
+                    break;
+                case 'TA':
+                    studentenTAcluster.addLayer(marker);
+                    studentenTAaantal++;
+                    break;
+                case 'TB':
+                    studentenTBcluster.addLayer(marker);
+                    studentenTBaantal++;
+                    break;
+                case 'VM':
+                    studentenVMcluster.addLayer(marker);
+                    studentenVMaantal++;
+                    break;
+
+            }
+            oms.addMarker(marker);
+        });
+    })
+     .error(function ()
+     {
+         alert("Fout opgetreden bij laden buitenlandse studies");
+     });
+    
+    serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:huidige%20stages&outputFormat=application%2Fjson'};
+    //Lezen JSON alle stages
     $.ajax(
     {
         url: 'geoproxy.php',
@@ -515,7 +548,7 @@ function initMap()
     })
     .error(function ()
     {
-        alert("er gaat iets fout");
+        alert("fout opgetreden bij laden van stages uit database");
     });
 
     kaart.addLayer(studentenBAcluster);
@@ -531,7 +564,6 @@ function initMap()
     kaart.addLayer(studentenVMcluster);
     kaart.addLayer(medewerkersLayer);
 
-    };
 
     //de layers die je aan en uit kan zetten in het menu rechtsonderin
     var categorien = {
@@ -548,6 +580,8 @@ function initMap()
 
         }
     };
+}
+
 function initZoom()
 {
     kaart.setZoom(2);
