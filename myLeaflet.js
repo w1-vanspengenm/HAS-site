@@ -73,12 +73,12 @@ $(document).ready(function ()
             opleidingData = data;
             initMap();
         })
-        .error(function ()
+        .fail(function ()
         {
             alert("Opleidingen json niet opgehaald");
         });
     })
-    .error(function ()
+    .fail(function ()
     {
         alert("Landen json niet opgehaald");
     });
@@ -400,7 +400,7 @@ function initMap()
             medewerkersAantal++;
         });
     })
-    .error(function ()
+    .fail(function ()
     {
         alert("fout opgetreden bij laden van medewerkers uit database")
     });
@@ -473,7 +473,7 @@ function initMap()
             oms.addMarker(marker);
         });
     })
-     .error(function ()
+     .fail(function ()
      {
          alert("Fout opgetreden bij laden buitenlandse studies");
      });
@@ -546,7 +546,7 @@ function initMap()
         });
         makeMenu();
     })
-    .error(function ()
+    .fail(function ()
     {
         alert("fout opgetreden bij laden van stages uit database");
     });
