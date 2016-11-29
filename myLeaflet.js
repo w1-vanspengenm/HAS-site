@@ -8,10 +8,10 @@ var grayGroupLayer;
 var satellietLayer;
 var studentenBAcluster;
 var studentenDVcluster;
-var studentenFDcluster;
-var studentenGMDcluster;
+var studentenFIcluster;
+var studentenGMcluster;
 var studentenHBMcluster;
-var studentenIFAcluster;
+var studentenIFcluster;
 var studentenMKcluster;
 var studentenPVcluster;
 var studentenTAcluster;
@@ -19,17 +19,17 @@ var studentenTBcluster;
 var studentenVMcluster;
 var studentenBAaantal = 0;
 var studentenDVaantal = 0;
-var studentenFDaantal = 0;
-var studentenGMDaantal = 0;
+var studentenFIaantal = 0;
+var studentenGMaantal = 0;
 var studentenHBMaantal = 0;
-var studentenIFAaantal = 0;
+var studentenIFaantal = 0;
 var studentenMKaantal = 0;
-var studentenPVaantal = 0;
+var studentenMLaantal = 0;
 var studentenTAaantal = 0;
 var studentenTBaantal = 0;
 var studentenVMaantal = 0;
-var medewerkersAantal = 0;
-var medewerkersLayer;
+//var medewerkersAantal = 0;
+//var medewerkersLayer;
 var popupOffset = new L.Point(0,-20);
 
 
@@ -181,90 +181,71 @@ function geenStages(checkb)
     $("#"+checkb.id).attr('checked', false);
 }
 
-function geenMedewerkers()
-{
-    switch(taal)
-    {
-        case "NL":
-            BootstrapDialog.alert("Op dit moment zijn er geen medewerkers in het buitenland");
-            break;
-        case "EN":
-            BootstrapDialog.alert("At this moment no staff is abroad");
-            break;
-    }
-}
-
-function geenStudie()
-{
-    switch(taal)
-    {
-        case "NL":
-            BootstrapDialog.alert("Op dit moment geen studenten die in het buitenland studeren");
-            break;
-        case "EN":
-            BootstrapDialog.alert("At this moment no students follow a study program abroad");
-            break;
-    }
-}
-
-
+//function geenMedewerkers()
+//{
+//    switch(taal)
+//    {
+//        case "NL":
+//            BootstrapDialog.alert("Op dit moment zijn er geen medewerkers in het buitenland");
+//            break;
+//        case "EN":
+//            BootstrapDialog.alert("At this moment no staff is abroad");
+//            break;
+//    }
+//}
 
 function switchMarkers(checkb)
 {
     switch(checkb.id)
     {
-        case 'ba':
+        case 'BA':
             if (checkb.checked) { kaart.addLayer(studentenBAcluster); }
             else { kaart.removeLayer(studentenBAcluster); }
             break;
-        case 'dv':
+        case 'DV':
             if (checkb.checked) { kaart.addLayer(studentenDVcluster); }
             else { kaart.removeLayer(studentenDVcluster); }
             break;
-        case 'fd':
-            if (checkb.checked) { kaart.addLayer(studentenFDcluster); }
-            else { kaart.removeLayer(studentenFDcluster); }
+        case 'FI':
+            if (checkb.checked) { kaart.addLayer(studentenFIcluster); }
+            else { kaart.removeLayer(studentenFIcluster); }
             break;
-        case 'gmd':
-            if (checkb.checked) { kaart.addLayer(studentenGMDcluster); }
-            else { kaart.removeLayer(studentenGMDcluster); }
+        case 'GM':
+            if (checkb.checked) { kaart.addLayer(studentenGMcluster); }
+            else { kaart.removeLayer(studentenGMcluster); }
             break;
-        case 'hbm':
+        case 'HBM':
             if (checkb.checked) { kaart.addLayer(studentenHBMcluster); }
             else { kaart.removeLayer(studentenHBMcluster); }
             break;
-        case 'ifa':
-            if (checkb.checked) { kaart.addLayer(studentenIFAcluster); }
-            else { kaart.removeLayer(studentenIFAcluster); }
+        case 'IF':
+            if (checkb.checked) { kaart.addLayer(studentenIFcluster); }
+            else { kaart.removeLayer(studentenIFcluster); }
             break;
-        case 'mk':
+        case 'MK':
             if (checkb.checked) { kaart.addLayer(studentenMKcluster); }
             else { kaart.removeLayer(studentenMKcluster); }
             break;
-        case 'pv':
-            if (checkb.checked) { kaart.addLayer(studentenPVcluster); }
-            else { kaart.removeLayer(studentenPVcluster); }
+        case 'ML':
+            if (checkb.checked) { kaart.addLayer(studentenMLcluster); }
+            else { kaart.removeLayer(studentenMLcluster); }
             break;
-        case 'ta':
+        case 'TA':
             if (checkb.checked) { kaart.addLayer(studentenTAcluster); }
             else { kaart.removeLayer(studentenTAcluster); }
             break;
-        case 'tb':
+        case 'TB':
             if (checkb.checked) { kaart.addLayer(studentenTBcluster); }
             else { kaart.removeLayer(studentenTBcluster); }
             break;
-        case 'vm':
+        case 'VM':
             if (checkb.checked) { kaart.addLayer(studentenVMcluster); }
             else { kaart.removeLayer(studentenVMcluster); }
             break;
-        case 'medewerkers':
-            if (checkb.checked) { kaart.addLayer(medewerkersLayer); }
-            else { kaart.removeLayer(medewerkersLayer); }
-            break;
-        case 'studie':
-            if (checkb.checked) { kaart.addLayer(studieLayer); }
-            else { kaart.removeLayer(studieLayer); }
-            break;
+        //case 'medewerkers':
+        //    if (checkb.checked) { kaart.addLayer(medewerkersLayer); }
+        //    else { kaart.removeLayer(medewerkersLayer); }
+        //    break;
     }
 }
 
@@ -319,19 +300,18 @@ function initMap()
         iconAnchor : [15, 32]
     });
 
-    var medewerkerIcon = new LeafIcon({
-        iconUrl : 'images/Medewerker.png',
-        iconSize : [32, 32],
-        iconAnchor : [15, 32]
-    });
+    //var medewerkerIcon = new LeafIcon({
+    //    iconUrl : 'images/Medewerker.png',
+    //    iconSize : [32, 32],
+    //    iconAnchor : [15, 32]
+    //});
 
     var studentIcon = new LeafIcon({
         iconUrl : 'images/Studie.png',
         iconSize : [32, 32],
         iconAnchor : [15, 32]
     });
-    medewerkersLayer = new L.FeatureGroup();
-    studieLayer = new L.FeatureGroup();
+    //medewerkersLayer = new L.FeatureGroup();
 
 
 
@@ -346,11 +326,11 @@ function initMap()
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
-    studentenFDcluster = new L.FeatureGroup();
+    studentenFIcluster = new L.FeatureGroup();
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
-    studentenGMDcluster = new L.FeatureGroup();
+    studentenGMcluster = new L.FeatureGroup();
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
@@ -358,14 +338,14 @@ function initMap()
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
-    studentenIFAcluster = new L.FeatureGroup();
+    studentenIFcluster = new L.FeatureGroup();
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenMKcluster = new L.FeatureGroup();
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
-    studentenPVcluster = new L.FeatureGroup();
+    studentenMLcluster = new L.FeatureGroup();
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
@@ -379,31 +359,31 @@ function initMap()
     studentenVMcluster = new L.FeatureGroup();
 
 
-    serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Actuele%20medewerkers%20in%20het%20buitenland&outputFormat=application%2Fjson'};
-    //Lezen JSON alle medewerkers
-    $.ajax(
-    {
-        url: 'geoproxy.php',
-        dataType: 'json',
-        method: 'post',
-        data: serviceName
-    })
-    .done(function (data)
-    {
-        $.each(data.features, function (i, medewerker)
-        {
-            var marker = new L.Marker([medewerker.properties.Latitude, medewerker.properties.Longitude], {
-                icon: medewerkerIcon
-            }).bindPopup(medewerker.properties.Voornaam + " " + medewerker.properties.Achternaam + "<br>" + medewerker.properties.Omschrijving + "<br>" + medewerker.properties.Plaats + "<br>" + getLandNaam(medewerker.properties.Landcode), { offset: popupOffset });
-            medewerkersLayer.addLayer(marker);
-            oms.addMarker(marker);
-            medewerkersAantal++;
-        });
-    })
-    .fail(function ()
-    {
-        alert("fout opgetreden bij laden van medewerkers uit database")
-    });
+    //serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Actuele%20medewerkers%20in%20het%20buitenland&outputFormat=application%2Fjson'};
+    ////Lezen JSON alle medewerkers
+    //$.ajax(
+    //{
+    //    url: 'geoproxy.php',
+    //    dataType: 'json',
+    //    method: 'post',
+    //    data: serviceName
+    //})
+    //.done(function (data)
+    //{
+    //    $.each(data.features, function (i, medewerker)
+    //    {
+    //        var marker = new L.Marker([medewerker.properties.Latitude, medewerker.properties.Longitude], {
+    //            icon: medewerkerIcon
+    //        }).bindPopup(medewerker.properties.Voornaam + " " + medewerker.properties.Achternaam + "<br>" + medewerker.properties.Omschrijving + "<br>" + medewerker.properties.Plaats + "<br>" + getLandNaam(medewerker.properties.Landcode), { offset: popupOffset });
+    //        medewerkersLayer.addLayer(marker);
+    //        oms.addMarker(marker);
+    //        medewerkersAantal++;
+    //    });
+    //})
+    //.fail(function ()
+    //{
+    //    alert("fout opgetreden bij laden van medewerkers uit database")
+    //});
 
     
     serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Studies%20in%20het%20buitenland&outputFormat=application%2Fjson'};
@@ -432,29 +412,29 @@ function initMap()
                     studentenDVcluster.addLayer(marker);
                     studentenDVaantal++;
                     break;
-                case 'FD':
-                    studentenFDcluster.addLayer(marker);
-                    studentenFDaantal++;
+                case 'FI':
+                    studentenFIcluster.addLayer(marker);
+                    studentenFIaantal++;
                     break;
                 case 'GM':
-                    studentenGMDcluster.addLayer(marker);
-                    studentenGMDaantal++;
+                    studentenGMcluster.addLayer(marker);
+                    studentenGMaantal++;
                     break;
                 case 'HBM':
                     studentenHBMcluster.addLayer(marker);
                     studentenHBMaantal++;
                     break;
-                case 'IFA':
-                    studentenIFAcluster.addLayer(marker);
-                    studentenIFAaantal++;
+                case 'IF':
+                    studentenIFcluster.addLayer(marker);
+                    studentenIFaantal++;
                     break;
                 case 'MK':
                     studentenMKcluster.addLayer(marker);
                     studentenMKaantal++;
                     break;
-                case 'PV':
-                    studentenPVcluster.addLayer(marker);
-                    studentenPVaantal++;
+                case 'ML':
+                    studentenMLcluster.addLayer(marker);
+                    studentenMLaantal++;
                     break;
                 case 'TA':
                     studentenTAcluster.addLayer(marker);
@@ -504,29 +484,29 @@ function initMap()
                     studentenDVcluster.addLayer(marker);
                     studentenDVaantal++;
                     break;
-                case 'FD':
-                    studentenFDcluster.addLayer(marker);
-                    studentenFDaantal++;
+                case 'FI':
+                    studentenFIcluster.addLayer(marker);
+                    studentenFIaantal++;
                     break;
                 case 'GM':
-                    studentenGMDcluster.addLayer(marker);
-                    studentenGMDaantal++;
+                    studentenGMcluster.addLayer(marker);
+                    studentenGMaantal++;
                     break;
                 case 'HBM':
                     studentenHBMcluster.addLayer(marker);
                     studentenHBMaantal++;
                     break;
-                case 'IFA':
-                    studentenIFAcluster.addLayer(marker);
-                    studentenIFAantal++;
+                case 'IF':
+                    studentenIFcluster.addLayer(marker);
+                    studentenIFaantal++;
                     break;
                 case 'MK':
                     studentenMKcluster.addLayer(marker);
                     studentenMKaantal++;
                     break;
-                case 'PV':
-                    studentenPVcluster.addLayer(marker);
-                    studentenPVaantal++;
+                case 'ML':
+                    studentenMLcluster.addLayer(marker);
+                    studentenMLaantal++;
                     break;
                 case 'TA':
                     studentenTAcluster.addLayer(marker);
@@ -553,16 +533,16 @@ function initMap()
 
     kaart.addLayer(studentenBAcluster);
     kaart.addLayer(studentenDVcluster);
-    kaart.addLayer(studentenFDcluster);
-    kaart.addLayer(studentenGMDcluster);
+    kaart.addLayer(studentenFIcluster);
+    kaart.addLayer(studentenGMcluster);
     kaart.addLayer(studentenHBMcluster);
-    kaart.addLayer(studentenIFAcluster);
+    kaart.addLayer(studentenIFcluster);
     kaart.addLayer(studentenMKcluster);
-    kaart.addLayer(studentenPVcluster);
+    kaart.addLayer(studentenMLcluster);
     kaart.addLayer(studentenTAcluster);
     kaart.addLayer(studentenTBcluster);
     kaart.addLayer(studentenVMcluster);
-    kaart.addLayer(medewerkersLayer);
+    //kaart.addLayer(medewerkersLayer);
 
 
     //de layers die je aan en uit kan zetten in het menu rechtsonderin
@@ -570,10 +550,10 @@ function initMap()
         "Stages" : {
             "BA" : studentenBAcluster,
             "DV" : studentenDVcluster,
-            "FD" : studentenFDcluster,
+            "FI" : studentenFIcluster,
             "HBM" : studentenHBMcluster,
             "MK" : studentenMKcluster,
-            "PV" : studentenPVcluster,
+            "ML" : studentenMLcluster,
             "TA" : studentenTAcluster,
             "TB" : studentenTBcluster,
             "VM" : studentenVMcluster
@@ -594,7 +574,7 @@ function makeMenu ()
     {
         case "NL":
             $('#kaart').append('<div id="legendamenu" onclick="showLegenda()"><h4><i class="glyphicon glyphicon-chevron-left"></i> Legenda</h4></div>');
-            $('#kaart').append('<div id="legenda" onclick="hideLegenda()"><h4><i class="glyphicon glyphicon-remove-circle"></i> Legenda</h4><ul><li><img src="images\\Stage.png" /> Stages</li><li><img src="images\\Medewerker.png" /> Medewerkers</li><li><img src="images\\Studie.png" /> Studie</li></ul></div>');
+            $('#kaart').append('<div id="legenda" onclick="hideLegenda()"><h4><i class="glyphicon glyphicon-remove-circle"></i> Legenda</h4><ul><li><img src="images\\Stage.png" /> Stages</li><li><img src="images\\Studie.png" /> Studie</li></ul></div>');
             hideLegenda();
             var filterTekst = '<div id="filter" ><h4>Filter <span onclick="hideFilter()"><i class="glyphicon glyphicon-remove-circle"></i></span></h4>';
             filterTekst += '<ul><li><h4>Achtergrondkaarten</h4><ul>';
@@ -603,103 +583,103 @@ function makeMenu ()
             filterTekst += '</ul></li><li><h4>Opleidingen</h4><ul>';
             if (studentenBAaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="ba" onclick="switchMarkers(this)" checked="checked" />Bedrijskunde en Agribusiness</li>';
+                filterTekst += '<li><input type="checkbox" id="BA" onclick="switchMarkers(this)" checked="checked" />Bedrijskunde en Agribusiness</li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="ba" onclick="geenStages(this)" /> <label for="ba" class="filterinactive">Bedrijskunde en Agribusiness</label></li>';
+                filterTekst += '<li><input type="checkbox" id="BA" onclick="geenStages(this)" /> <label for="BA" class="filterinactive">Bedrijskunde en Agribusiness</label></li>';
             }
             if (studentenDVaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="dv" onclick="switchMarkers(this)" checked="checked" /> <label for="dv">Dier- en Veehouderij</label></li>';
+                filterTekst += '<li><input type="checkbox" id="DV" onclick="switchMarkers(this)" checked="checked" /> <label for="DV">Dier- en Veehouderij</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="dv" onclick="geenStages(this)" /> <label for="dv" class="filterinactive">Dier- en Veehouderij</label></li>';
+                filterTekst += '<li><input type="checkbox" id="DV" onclick="geenStages(this)" /> <label for="DV" class="filterinactive">Dier- en Veehouderij</label></li>';
             }
-            if (studentenFDaantal > 0)
+            if (studentenFIaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="fd" onclick="switchMarkers(this)" checked="checked" /> <label for="fd">Food Design</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="fd" onclick="geenStages(this)" /> <label for="fd" class="filterinactive">Food Design</label></li>';
-            }
-            if (studentenGMDaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="gmd" onclick="switchMarkers(this)" checked="checked" /> <label for="gmd">Geo Media &amp; Design</label></li>';
+                filterTekst += '<li><input type="checkbox" id="FI" onclick="switchMarkers(this)" checked="checked" /> <label for="FI">Food Innovation</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="gmd" onclick="geenStages(this)" /> <label for="gmd" class="filterinactive">Geo Media & Design</label></li>';
+                filterTekst += '<li><input type="checkbox" id="FI" onclick="geenStages(this)" /> <label for="FI" class="filterinactive">Food Innovation</label></li>';
+            }
+            if (studentenGMaantal > 0)
+            {
+                filterTekst += '<li><input type="checkbox" id="GM" onclick="switchMarkers(this)" checked="checked" /> <label for="GM">Geo Media &amp; Design</label></li>';
+            }
+            else
+            {
+                filterTekst += '<li><input type="checkbox" id="GM" onclick="geenStages(this)" /> <label for="GM" class="filterinactive">Geo Media & Design</label></li>';
             }
             if (studentenHBMaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="hbm" onclick="switchMarkers(this)" checked="checked" /> <label for="hbm">Horticulture &amp; Business Management</label></li>';
+                filterTekst += '<li><input type="checkbox" id="HBM" onclick="switchMarkers(this)" checked="checked" /> <label for="HBM">Horticulture &amp; Business Management</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="hbm" onclick="geenStages(this)" /> <label for="hbm" class="filterinactive">Horticulture &amp; Business Management</label></li>';
+                filterTekst += '<li><input type="checkbox" id="HBM" onclick="geenStages(this)" /> <label for="HBM" class="filterinactive">Horticulture &amp; Business Management</label></li>';
             }
-            if (studentenIFAaantal > 0)
+            if (studentenIFaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="ifa" onclick="switchMarkers(this)" checked="checked" /> <label for="ifa">International Food &amp; Agribusiness</label></li>';
+                filterTekst += '<li><input type="checkbox" id="IF" onclick="switchMarkers(this)" checked="checked" /> <label for="IF">International Food &amp; Agribusiness</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="ifa" onclick="geenStages(this)" /> <label for="ifa" class="filterinactive">International Food &amp; Agribusiness</label></li>';
+                filterTekst += '<li><input type="checkbox" id="IF" onclick="geenStages(this)" /> <label for="IF" class="filterinactive">International Food &amp; Agribusiness</label></li>';
             }
             if (studentenMKaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="mk" onclick="switchMarkers(this)" checked="checked" /> <label for="mk">Milieukunde</label></li>';
+                filterTekst += '<li><input type="checkbox" id="MK" onclick="switchMarkers(this)" checked="checked" /> <label for="MK">Milieukunde</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="mk" onclick="geenStages(this)" /> <label for="mk" class="filterinactive">Milieukunde</label></li>';
+                filterTekst += '<li><input type="checkbox" id="MK" onclick="geenStages(this)" /> <label for="MK" class="filterinactive">Milieukunde</label></li>';
             }
-            if (studentenPVaantal > 0)
+            if (studentenMLaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="pv" onclick="switchMarkers(this)" checked="checked" /> <label for="pv">Plattelandsvernieuwing</label></li>';
+                filterTekst += '<li><input type="checkbox" id="ML" onclick="switchMarkers(this)" checked="checked" /> <label for="ML">Management van de Leefomgeving</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="pv" onclick="geenStages(this)" /> <label for="pv" class="filterinactive">Plattelandsvernieuwing</label></li>';
+                filterTekst += '<li><input type="checkbox" id="ML" onclick="geenStages(this)" /> <label for="ML" class="filterinactive">Management van de Leefomgeving</label></li>';
             }
             if (studentenTAaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="ta" onclick="switchMarkers(this)" checked="checked" /> <label for="ta">Tuin- en Akkerbouw</label></li>';
+                filterTekst += '<li><input type="checkbox" id="TA" onclick="switchMarkers(this)" checked="checked" /> <label for="TA">Tuin- en Akkerbouw</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="ta" onclick="geenStages(this)" /> <label for="ta" class="filterinactive">Tuin- en Akkerbouw</label></li>';
+                filterTekst += '<li><input type="checkbox" id="TA" onclick="geenStages(this)" /> <label for="TA" class="filterinactive">Tuin- en Akkerbouw</label></li>';
             }
             if (studentenTBaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="tb" onclick="switchMarkers(this)" checked="checked" /> <label for="tb">Toegepaste Biologie</label></li>';
+                filterTekst += '<li><input type="checkbox" id="TB" onclick="switchMarkers(this)" checked="checked" /> <label for="TB">Toegepaste Biologie</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="tb" onclick="geenStages(this)" /> <label for="tb" class="filterinactive">Toegepaste Biologie</label></li>';
+                filterTekst += '<li><input type="checkbox" id="TB" onclick="geenStages(this)" /> <label for="TB" class="filterinactive">Toegepaste Biologie</label></li>';
             }
             if (studentenVMaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="vm" onclick="switchMarkers(this)" checked="checked" /> <label for="vm">Voedingsmiddelen Technologie</label></li>';
+                filterTekst += '<li><input type="checkbox" id="VM" onclick="switchMarkers(this)" checked="checked" /> <label for="VM">Voedingsmiddelen Technologie</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="vm" onclick="geenStages(this)" /> <label for="vm" class="filterinactive">Voedingsmiddelen Technologie</label></li>';
+                filterTekst += '<li><input type="checkbox" id="VM" onclick="geenStages(this)" /> <label for="VM" class="filterinactive">Voedingsmiddelen Technologie</label></li>';
             }
             filterTekst += '</ul>';
 
-            filterTekst += '<li><h4>Medewerkers</h4><ul>';
-            if (medewerkersAantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="switchMarkers(this)" checked="checked" /> <label for="medewerkers">Medewerkers</li></ul>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="geenMedewerkers() class="filterinactive" /> <label for="medewerkers">Medewerkers</li></ul>';
-            }
+            //filterTekst += '<li><h4>Medewerkers</h4><ul>';
+            //if (medewerkersAantal > 0)
+            //{
+            //    filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="switchMarkers(this)" checked="checked" /> <label for="medewerkers">Medewerkers</li></ul>';
+            //}
+            //else
+            //{
+            //    filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="geenMedewerkers() class="filterinactive" /> <label for="medewerkers">Medewerkers</li></ul>';
+            //}
             filterTekst += '</ul></div>';
             $('#kaart').append('<div id="filtermenu" onclick="showFilter()"><h4>Filter <i class="glyphicon glyphicon-chevron-right"></i></h4></div>');
             $('#kaart').append(filterTekst);
@@ -707,7 +687,7 @@ function makeMenu ()
             break;
         case "EN":
             $('#kaart').append('<div id="legendamenu" onclick="showLegenda()"><h4><i class="glyphicon glyphicon-chevron-left"></i> Legend</h4></div>');
-            $('#kaart').append('<div id="legenda" onclick="hideLegenda()"><h4> <i class="glyphicon glyphicon-remove-circle"></i> Legend</h4><ul><li><img src="images\\Stage.png" /> Traineeships</li><li><img src="images\\Medewerker.png" /> Staff</li><li><img src="images\\Studie.png" /> Study</li></ul></div>');
+            $('#kaart').append('<div id="legenda" onclick="hideLegenda()"><h4> <i class="glyphicon glyphicon-remove-circle"></i> Legend</h4><ul><li><img src="images\\Stage.png" /> Traineeships</li><li><img src="images\\Studie.png" /> Study</li></ul></div>');
             hideLegenda();
             var filterTekst = '<div id="filter" ><h4>Filter <span onclick="hideFilter()"><i class="glyphicon glyphicon-remove-circle"></i></span></h4>';
             filterTekst += '<ul><li><h4>Type of map</h4><ul>';
@@ -716,103 +696,103 @@ function makeMenu ()
             filterTekst += '</ul></li><li><h4>Study Programmes</h4><ul>';
             if (studentenBAaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="ba" onclick="switchMarkers(this)" checked="checked" /> <label for="ba">Business Administration &amp; Agribusiness</label></li>';
+                filterTekst += '<li><input type="checkbox" id="BA" onclick="switchMarkers(this)" checked="checked" /> <label for="BA">Business Administration &amp; Agribusiness</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="ba" onclick="geenStages(this)" /> <label for="ba" class="filterinactive">Business Administration &amp; Agribusiness</label></li>';
+                filterTekst += '<li><input type="checkbox" id="BA" onclick="geenStages(this)" /> <label for="BA" class="filterinactive">Business Administration &amp; Agribusiness</label></li>';
             }
             if (studentenDVaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="dv" onclick="switchMarkers(this)" checked="checked" /> <label for="dv">Animal Husbandry &amp; Animal Care</label></li>';
+                filterTekst += '<li><input type="checkbox" id="DV" onclick="switchMarkers(this)" checked="checked" /> <label for="DV">Animal Husbandry &amp; Animal Care</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="dv" onclick="geenStages(this)" /> <label for="dv" class="filterinactive">Animal Husbandry &amp; Animal Care</label></li>';
+                filterTekst += '<li><input type="checkbox" id="DV" onclick="geenStages(this)" /> <label for="DV" class="filterinactive">Animal Husbandry &amp; Animal Care</label></li>';
             }
-            if (studentenFDaantal > 0)
+            if (studentenFIaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="fd" onclick="switchMarkers(this)" checked="checked" /> <label for="fd">Food Design</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="fd" onclick="geenStages(this)" /> <label for="fd" class="filterinactive">Food Design</label></li>';
-            }
-            if (studentenGMDaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="gmd" onclick="switchMarkers(this)" checked="checked" /> <label for="gmd">Geo Media &amp; Design</label></li>';
+                filterTekst += '<li><input type="checkbox" id="FI" onclick="switchMarkers(this)" checked="checked" /> <label for="FI">Food Innovation</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="gmd" onclick="geenStages(this)" /> <label for="gmd" class="filterinactive">Geo Media & Design</label></li>';
+                filterTekst += '<li><input type="checkbox" id="FI" onclick="geenStages(this)" /> <label for="FI" class="filterinactive">Food Innovation</label></li>';
+            }
+            if (studentenGMaantal > 0)
+            {
+                filterTekst += '<li><input type="checkbox" id="GM" onclick="switchMarkers(this)" checked="checked" /> <label for="GM">Geo Media &amp; Design</label></li>';
+            }
+            else
+            {
+                filterTekst += '<li><input type="checkbox" id="GM" onclick="geenStages(this)" /> <label for="GM" class="filterinactive">Geo Media & Design</label></li>';
             }
             if (studentenHBMaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="hbm" onclick="switchMarkers(this)" checked="checked" /> <label for="hbm">Horticulture &amp; Business Management</label></li>';
+                filterTekst += '<li><input type="checkbox" id="HBM" onclick="switchMarkers(this)" checked="checked" /> <label for="HBM">Horticulture &amp; Business Management</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="hbm" onclick="geenStages(this)" /> <label for="hbm" class="filterinactive">Horticulture &amp; Business Management</label></li>';
+                filterTekst += '<li><input type="checkbox" id="HBM" onclick="geenStages(this)" /> <label for="HBM" class="filterinactive">Horticulture &amp; Business Management</label></li>';
             }
-            if (studentenIFAaantal > 0)
+            if (studentenIFaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="ifa" onclick="switchMarkers(this)" checked="checked" /> <label for="ifa">International Food &amp; Agribusiness</label></li>';
+                filterTekst += '<li><input type="checkbox" id="IF" onclick="switchMarkers(this)" checked="checked" /> <label for="IF">International Food &amp; Agribusiness</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="ifa" onclick="geenStages(this)" /> <label for="ifa" class="filterinactive">International Food &amp; Agribusiness</label></li>';
+                filterTekst += '<li><input type="checkbox" id="IF" onclick="geenStages(this)" /> <label for="IF" class="filterinactive">International Food &amp; Agribusiness</label></li>';
             }
             if (studentenMKaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="mk" onclick="switchMarkers(this)" checked="checked" /> <label for="mk">Environmental Studies</label></li>';
+                filterTekst += '<li><input type="checkbox" id="MK" onclick="switchMarkers(this)" checked="checked" /> <label for="MK">Environmental Studies</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="mk" onclick="geenStages(this)" /> <label for="mk" class="filterinactive">Environmental Studies</label></li>';
+                filterTekst += '<li><input type="checkbox" id="MK" onclick="geenStages(this)" /> <label for="MK" class="filterinactive">Environmental Studies</label></li>';
             }
-            if (studentenPVaantal > 0)
+            if (studentenMLaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="pv" onclick="switchMarkers(this)" checked="checked" /> <label for="pv">Garden & Landscape Management + Landscape Design + Urban & Rural Development</label></li>';
+                filterTekst += '<li><input type="checkbox" id="ML" onclick="switchMarkers(this)" checked="checked" /> <label for="ML">Spatial and Environmental Planning</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="pv" onclick="geenStages(this)" /> <label for="pv" class="filterinactive">Garden & Landscape Management + Landscape Design + Urban & Rural Development</label></li>';
+                filterTekst += '<li><input type="checkbox" id="ML" onclick="geenStages(this)" /> <label for="ML" class="filterinactive">Spatial and Environmental Planning</label></li>';
             }
             if (studentenTAaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="ta" onclick="switchMarkers(this)" checked="checked" /> <label for="ta">Horticulture & Arable Farming</label></li>';
+                filterTekst += '<li><input type="checkbox" id="TA" onclick="switchMarkers(this)" checked="checked" /> <label for="TA">Horticulture & Arable Farming</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="ta" onclick="geenStages(this)" /> <label for="ta" class="filterinactive">Horticulture & Arable Farming</label></li>';
+                filterTekst += '<li><input type="checkbox" id="TA" onclick="geenStages(this)" /> <label for="TA" class="filterinactive">Horticulture & Arable Farming</label></li>';
             }
             if (studentenTBaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="tb" onclick="switchMarkers(this)" checked="checked" /> <label for="tb">Applied Biology</label></li>';
+                filterTekst += '<li><input type="checkbox" id="TB" onclick="switchMarkers(this)" checked="checked" /> <label for="TB">Applied Biology</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="tb" onclick="geenStages(this)" /> <label for="tb" class="filterinactive">Applied Biology</label></li>';
+                filterTekst += '<li><input type="checkbox" id="TB" onclick="geenStages(this)" /> <label for="TB" class="filterinactive">Applied Biology</label></li>';
             }
             if (studentenVMaantal > 0)
             {
-                filterTekst += '<li><input type="checkbox" id="vm" onclick="switchMarkers(this)" checked="checked" /> <label for="vm">Food Technology</label></li>';
+                filterTekst += '<li><input type="checkbox" id="VM" onclick="switchMarkers(this)" checked="checked" /> <label for="VM">Food Technology</label></li>';
             }
             else
             {
-                filterTekst += '<li><input type="checkbox" id="vm" onclick="geenStages(this)" /> <label for="vm" class="filterinactive">Food Technology</label></li>';
+                filterTekst += '<li><input type="checkbox" id="VM" onclick="geenStages(this)" /> <label for="VM" class="filterinactive">Food Technology</label></li>';
             }
             filterTekst += '</ul>';
 
-            filterTekst += '<li><h4>Staff</h4><ul>';
-            if (medewerkersAantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="switchMarkers(this)" checked="checked" /> <label for="medewerkers">Staff</li></ul>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="geenMedewerkers()" class="filterinactive" /> <label for="medewerkers">Staff</li></ul>';
-            }
+            //filterTekst += '<li><h4>Staff</h4><ul>';
+            //if (medewerkersAantal > 0)
+            //{
+            //    filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="switchMarkers(this)" checked="checked" /> <label for="medewerkers">Staff</li></ul>';
+            //}
+            //else
+            //{
+            //    filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="geenMedewerkers()" class="filterinactive" /> <label for="medewerkers">Staff</li></ul>';
+            //}
             filterTekst += '</ul></div>';
             $('#kaart').append('<div id="filtermenu" onclick="showFilter()"><h4>Filter <i class="glyphicon glyphicon-chevron-right"></i></h4></div>');
             $('#kaart').append(filterTekst);
