@@ -17,6 +17,14 @@ var studentenPVcluster;
 var studentenTAcluster;
 var studentenTBcluster;
 var studentenVMcluster;
+var studentenBVcluster;
+var studentenFVcluster;
+var studentenIVcluster;
+var studentenTVcluster;
+var studentenBVAantal=0;
+var studentenFVAantal=0;
+var studentenIVAantal=0;
+var studentenTVAantal=0;
 var studentenBAaantal = 0;
 var studentenDVaantal = 0;
 var studentenFIaantal = 0;
@@ -60,7 +68,7 @@ $(document).ready(function ()
     .done(function (data)
     {
         landenData = data;
-        serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:tbl_Opleidingen&outputFormat=application%2Fjson' };
+        serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Opleidingen&outputFormat=application%2Fjson' };
         $.ajax(
         {
             url: 'geoproxy.php',
@@ -112,7 +120,7 @@ function getOpleidingNaam(opleidingcode)
     var opleidingnaam;
     $.each(opleidingData.features, function (i, opleidingen)
     {
-        if ("tbl_Opleidingen." + opleidingcode == opleidingen.id)
+        if ( opleidingcode == opleidingen.properties.Opledingscode)
         {
             switch (taal)
             {
@@ -202,6 +210,10 @@ function switchMarkers(checkb)
             if (checkb.checked) { kaart.addLayer(studentenBAcluster); }
             else { kaart.removeLayer(studentenBAcluster); }
             break;
+        case 'BV':
+            if (checkb.checked) { kaart.addLayer(studentenBVcluster); }
+            else { kaart.removeLayer(studentenBVcluster); }
+            break;
         case 'DV':
             if (checkb.checked) { kaart.addLayer(studentenDVcluster); }
             else { kaart.removeLayer(studentenDVcluster); }
@@ -209,6 +221,10 @@ function switchMarkers(checkb)
         case 'FI':
             if (checkb.checked) { kaart.addLayer(studentenFIcluster); }
             else { kaart.removeLayer(studentenFIcluster); }
+            break;
+        case 'FV':
+            if (checkb.checked) { kaart.addLayer(studentenFVcluster); }
+            else { kaart.removeLayer(studentenFVcluster); }
             break;
         case 'GM':
             if (checkb.checked) { kaart.addLayer(studentenGMcluster); }
@@ -238,10 +254,19 @@ function switchMarkers(checkb)
             if (checkb.checked) { kaart.addLayer(studentenTBcluster); }
             else { kaart.removeLayer(studentenTBcluster); }
             break;
+        case 'TV':
+            if (checkb.checked) { kaart.addLayer(studentenTVcluster); }
+            else { kaart.removeLayer(studentenTVcluster); }
+            break;
         case 'VM':
             if (checkb.checked) { kaart.addLayer(studentenVMcluster); }
             else { kaart.removeLayer(studentenVMcluster); }
             break;
+        case 'IV':
+            if (checkb.checked) { kaart.addLayer(studentenIVcluster); }
+            else { kaart.removeLayer(studentenIVcluster); }
+            break;
+
         //case 'medewerkers':
         //    if (checkb.checked) { kaart.addLayer(medewerkersLayer); }
         //    else { kaart.removeLayer(medewerkersLayer); }
@@ -314,6 +339,8 @@ function initMap()
     //medewerkersLayer = new L.FeatureGroup();
 
 
+    //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
+    studentenBVcluster = new L.FeatureGroup();
 
 
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
@@ -358,6 +385,14 @@ function initMap()
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenVMcluster = new L.FeatureGroup();
 
+    //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
+    studentenTVcluster = new L.FeatureGroup();
+
+    //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
+    studentenIVcluster = new L.FeatureGroup();
+
+    //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
+    studentenFVcluster = new L.FeatureGroup();
 
     //serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Actuele%20medewerkers%20in%20het%20buitenland&outputFormat=application%2Fjson'};
     ////Lezen JSON alle medewerkers
@@ -374,7 +409,7 @@ function initMap()
     //    {
     //        var marker = new L.Marker([medewerker.properties.Latitude, medewerker.properties.Longitude], {
     //            icon: medewerkerIcon
-    //        }).bindPopup(medewerker.properties.Voornaam + " " + medewerker.properties.Achternaam + "<br>" + medewerker.properties.Omschrijving + "<br>" + medewerker.properties.Plaats + "<br>" + getLandNaam(medewerker.properties.Landcode), { offset: popupOffset });
+    //        }).bindPopup(medewerker.properties.Voornaam + " " + medewerker.properties.Tussenvoegsel+" "+ medewerker.properties.Achternaam + "<br>" + medewerker.properties.Omschrijving + "<br>" + medewerker.properties.Plaats + "<br>" + getLandNaam(medewerker.properties.Landcode), { offset: popupOffset });
     //        medewerkersLayer.addLayer(marker);
     //        oms.addMarker(marker);
     //        medewerkersAantal++;
@@ -395,18 +430,19 @@ function initMap()
         method: 'post',
         data: serviceName
     })
-    .done(function (data)
-    {
-        $.each(data.features, function (i, student)
-        {
+    .done(function (data) {
+        $.each(data.features, function (i, student) {
             var marker = new L.Marker([student.properties.Latitude, student.properties.Longitude], {
                 icon: studentIcon
-            }).bindPopup(student.properties.Voornaam + " " + student.properties.Achternaam + "<br>" + student.properties.Instelling_naam + "<br>" + student.properties.Plaats + "<br>" + getLandNaam(student.properties.Landcode) + "<br>" + getOpleidingNaam(student.properties.Opleidingscode), { offset: popupOffset });
-            switch (student.properties.Opleidingscode)
-            {
+            }).bindPopup(student.properties.Voornaam + " " + student.properties.Tussenvoegsel + " " + student.properties.Achternaam + "<br>" + student.properties.Instelling_naam + "<br>" + student.properties.Plaats + "<br>" + getLandNaam(student.properties.Landcode) + "<br>" + getOpleidingNaam(student.properties.Opleidingscode), { offset: popupOffset });
+            switch (student.properties.Opleidingscode) {
                 case 'BA':
                     studentenBAcluster.addLayer(marker);
                     studentenBAaantal++;
+                    break;
+                case 'BV':
+                    studentenBVcluster.addLayer(marker);
+                    studentenBVAantal++;
                     break;
                 case 'DV':
                     studentenDVcluster.addLayer(marker);
@@ -415,6 +451,10 @@ function initMap()
                 case 'FI':
                     studentenFIcluster.addLayer(marker);
                     studentenFIaantal++;
+                    break;
+                case 'FV':
+                    studentenFVcluster.addLayer(marker);
+                    studentenFVAantal++;
                     break;
                 case 'GM':
                     studentenGMcluster.addLayer(marker);
@@ -444,17 +484,23 @@ function initMap()
                     studentenTBcluster.addLayer(marker);
                     studentenTBaantal++;
                     break;
+                case 'TV':
+                    studentenTVcluster.addLayer(marker);
+                    studentenTVAantal++;
+                    break;
                 case 'VM':
                     studentenVMcluster.addLayer(marker);
                     studentenVMaantal++;
                     break;
-
+                case 'IV':
+                    studentenIVcluster.addLayer(marker);
+                    studentenIVAantal++;
+                    break;
             }
             oms.addMarker(marker);
         });
     })
-     .fail(function ()
-     {
+     .fail(function () {
          alert("Fout opgetreden bij laden buitenlandse studies");
      });
     
@@ -467,18 +513,19 @@ function initMap()
         method: 'post',
         data: serviceName
     })
-    .done(function (data)
-    {
-        $.each(data.features, function (i, stages)
-        {
+    .done(function (data) {
+        $.each(data.features, function (i, stages) {
             var marker = new L.Marker([stages.properties.Latitude, stages.properties.Longitude], {
                 icon: stageIcon
-            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
-            switch (stages.properties.Opleidingscode)
-            {
+            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Tussenvoegsel + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
+            switch (stages.properties.Opleidingscode) {
                 case 'BA':
                     studentenBAcluster.addLayer(marker);
                     studentenBAaantal++;
+                    break;
+                case 'BV':
+                    studentenBVcluster.addLayer(marker);
+                    studentenBVAantal++;
                     break;
                 case 'DV':
                     studentenDVcluster.addLayer(marker);
@@ -487,6 +534,10 @@ function initMap()
                 case 'FI':
                     studentenFIcluster.addLayer(marker);
                     studentenFIaantal++;
+                    break;
+                case 'FV':
+                    studentenFVcluster(marker);
+                    studentenFVAantal++;
                     break;
                 case 'GM':
                     studentenGMcluster.addLayer(marker);
@@ -516,9 +567,17 @@ function initMap()
                     studentenTBcluster.addLayer(marker);
                     studentenTBaantal++;
                     break;
+                case 'TV':
+                    studentenTVcluster.addLayer(marker);
+                    studentenTVAantal++;
+                    break;
                 case 'VM':
                     studentenVMcluster.addLayer(marker);
                     studentenVMaantal++;
+                    break;
+                case 'IV':
+                    studentenIVcluster.addLayer(marker);
+                    studentenIVAantal++;
                     break;
 
             }
@@ -526,8 +585,7 @@ function initMap()
         });
         makeMenu();
     })
-    .fail(function ()
-    {
+    .fail(function () {
         alert("fout opgetreden bij laden van stages uit database");
     });
 
@@ -542,6 +600,10 @@ function initMap()
     kaart.addLayer(studentenTAcluster);
     kaart.addLayer(studentenTBcluster);
     kaart.addLayer(studentenVMcluster);
+    kaart.addLayer(studentenIVcluster);
+    kaart.addLayer(studentenBVcluster);
+    kaart.addLayer(studentenTVcluster);
+    kaart.addLayer(studentenFVcluster);
     //kaart.addLayer(medewerkersLayer);
 
 
@@ -549,14 +611,18 @@ function initMap()
     var categorien = {
         "Stages" : {
             "BA" : studentenBAcluster,
+            "BV": studentenBVcluster,
             "DV" : studentenDVcluster,
             "FI" : studentenFIcluster,
+            "FV": studentenFVcluster,
             "HBM" : studentenHBMcluster,
             "MK" : studentenMKcluster,
             "ML" : studentenMLcluster,
             "TA" : studentenTAcluster,
             "TB" : studentenTBcluster,
-            "VM" : studentenVMcluster
+            "TV": studentenTVcluster,
+            "VM" : studentenVMcluster,
+            "IV": studentenIVcluster
 
         }
     };
