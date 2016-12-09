@@ -150,3 +150,8 @@ label {
 .leaflet-popup-content-wrapper {
 	z-index: 100;
 }
+.subfilter
+{
+    display: none;
+    padding-left: 20px;
+}

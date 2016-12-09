@@ -21,10 +21,10 @@ var studentenBVcluster;
 var studentenFVcluster;
 var studentenIVcluster;
 var studentenTVcluster;
-var studentenBVAantal=0;
-var studentenFVAantal=0;
-var studentenIVAantal=0;
-var studentenTVAantal=0;
+var studentenBVaantal=0;
+var studentenFVaantal=0;
+var studentenIVaantal=0;
+var studentenTVaantal=0;
 var studentenBAaantal = 0;
 var studentenDVaantal = 0;
 var studentenFIaantal = 0;
@@ -39,7 +39,8 @@ var studentenVMaantal = 0;
 //var medewerkersAantal = 0;
 //var medewerkersLayer;
 var popupOffset = new L.Point(0,-20);
-
+var plaatsen;
+var studentAantallenArray;
 
 var mapOptions = {
   zoomAnimation: true,
@@ -55,8 +56,7 @@ var zoomOptions = {
     animate: true
 };
 
-$(document).ready(function ()
-{
+$(document).ready(function () {
     serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:tbl_Landen&outputFormat=application%2Fjson' };
     $.ajax(
     {
@@ -65,8 +65,7 @@ $(document).ready(function ()
         method: 'post',
         data: serviceName
     })
-    .done(function (data)
-    {
+    .done(function (data) {
         landenData = data;
         serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Opleidingen&outputFormat=application%2Fjson' };
         $.ajax(
@@ -76,18 +75,29 @@ $(document).ready(function ()
             method: 'post',
             data: serviceName
         })
-        .done(function (data)
-        {
+        .done(function (data) {
             opleidingData = data;
-            initMap();
+            serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Unieke%20plaatsen&outputFormat=application%2Fjson' };
+            $.ajax(
+            {
+                url: 'geoproxy.php',
+                dataType: 'json',
+                method: 'post',
+                data: serviceName
+            })
+            .done(function (data) {
+                plaatsen = data;
+                initMap();
+            })
+            .fail(function () {
+                alert('plaatsen json niet opgehaald');
+            });
         })
-        .fail(function ()
-        {
+        .fail(function () {
             alert("Opleidingen json niet opgehaald");
         });
     })
-    .fail(function ()
-    {
+    .fail(function () {
         alert("Landen json niet opgehaald");
     });
 
@@ -442,7 +452,7 @@ function initMap()
                     break;
                 case 'BV':
                     studentenBVcluster.addLayer(marker);
-                    studentenBVAantal++;
+                    studentenBVaantal++;
                     break;
                 case 'DV':
                     studentenDVcluster.addLayer(marker);
@@ -454,7 +464,7 @@ function initMap()
                     break;
                 case 'FV':
                     studentenFVcluster.addLayer(marker);
-                    studentenFVAantal++;
+                    studentenFVaantal++;
                     break;
                 case 'GM':
                     studentenGMcluster.addLayer(marker);
@@ -486,7 +496,7 @@ function initMap()
                     break;
                 case 'TV':
                     studentenTVcluster.addLayer(marker);
-                    studentenTVAantal++;
+                    studentenTVaantal++;
                     break;
                 case 'VM':
                     studentenVMcluster.addLayer(marker);
@@ -494,7 +504,7 @@ function initMap()
                     break;
                 case 'IV':
                     studentenIVcluster.addLayer(marker);
-                    studentenIVAantal++;
+                    studentenIVaantal++;
                     break;
             }
             oms.addMarker(marker);
@@ -525,7 +535,7 @@ function initMap()
                     break;
                 case 'BV':
                     studentenBVcluster.addLayer(marker);
-                    studentenBVAantal++;
+                    studentenBVaantal++;
                     break;
                 case 'DV':
                     studentenDVcluster.addLayer(marker);
@@ -537,7 +547,7 @@ function initMap()
                     break;
                 case 'FV':
                     studentenFVcluster(marker);
-                    studentenFVAantal++;
+                    studentenFVaantal++;
                     break;
                 case 'GM':
                     studentenGMcluster.addLayer(marker);
@@ -569,7 +579,7 @@ function initMap()
                     break;
                 case 'TV':
                     studentenTVcluster.addLayer(marker);
-                    studentenTVAantal++;
+                    studentenTVaantal++;
                     break;
                 case 'VM':
                     studentenVMcluster.addLayer(marker);
@@ -577,7 +587,7 @@ function initMap()
                     break;
                 case 'IV':
                     studentenIVcluster.addLayer(marker);
-                    studentenIVAantal++;
+                    studentenIVaantal++;
                     break;
 
             }
@@ -635,6 +645,7 @@ function initZoom()
 
 function makeMenu ()
 {
+   studentAantallenArray=[studentenBAaantal, studentenBVaantal, studentenDVaantal, studentenFIaantal, studentenFVaantal, studentenGMaantal, studentenHBMaantal, studentenIFaantal, studentenMKaantal, studentenMLaantal, studentenTAaantal, studentenTBaantal, studentenTVaantal, studentenVMaantal, studentenIVaantal];
 
     switch (taal)
     {
@@ -646,109 +657,23 @@ function makeMenu ()
             filterTekst += '<ul><li><h4>Achtergrondkaarten</h4><ul>';
             filterTekst += '<li><input type="radio" name="achtergrond" id="grijs" onclick="switchAchtergrond(this)" checked="checked" /> <label for="grijs">Grijze achtergrondkaart</label></li>';
             filterTekst += '<li><input type="radio" name="achtergrond" id="satelliet" onclick="switchAchtergrond(this)" /> <label for="satelliet">Satelliet beelden</label></li>';
-            filterTekst += '</ul></li><li><h4>Opleidingen</h4><ul>';
-            if (studentenBAaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="BA" onclick="switchMarkers(this)" checked="checked" />Bedrijskunde en Agribusiness</li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="BA" onclick="geenStages(this)" /> <label for="BA" class="filterinactive">Bedrijskunde en Agribusiness</label></li>';
-            }
-            if (studentenDVaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="DV" onclick="switchMarkers(this)" checked="checked" /> <label for="DV">Dier- en Veehouderij</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="DV" onclick="geenStages(this)" /> <label for="DV" class="filterinactive">Dier- en Veehouderij</label></li>';
-            }
-            if (studentenFIaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="FI" onclick="switchMarkers(this)" checked="checked" /> <label for="FI">Food Innovation</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="FI" onclick="geenStages(this)" /> <label for="FI" class="filterinactive">Food Innovation</label></li>';
-            }
-            if (studentenGMaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="GM" onclick="switchMarkers(this)" checked="checked" /> <label for="GM">Geo Media &amp; Design</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="GM" onclick="geenStages(this)" /> <label for="GM" class="filterinactive">Geo Media & Design</label></li>';
-            }
-            if (studentenHBMaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="HBM" onclick="switchMarkers(this)" checked="checked" /> <label for="HBM">Horticulture &amp; Business Management</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="HBM" onclick="geenStages(this)" /> <label for="HBM" class="filterinactive">Horticulture &amp; Business Management</label></li>';
-            }
-            if (studentenIFaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="IF" onclick="switchMarkers(this)" checked="checked" /> <label for="IF">International Food &amp; Agribusiness</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="IF" onclick="geenStages(this)" /> <label for="IF" class="filterinactive">International Food &amp; Agribusiness</label></li>';
-            }
-            if (studentenMKaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="MK" onclick="switchMarkers(this)" checked="checked" /> <label for="MK">Milieukunde</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="MK" onclick="geenStages(this)" /> <label for="MK" class="filterinactive">Milieukunde</label></li>';
-            }
-            if (studentenMLaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="ML" onclick="switchMarkers(this)" checked="checked" /> <label for="ML">Management van de Leefomgeving</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="ML" onclick="geenStages(this)" /> <label for="ML" class="filterinactive">Management van de Leefomgeving</label></li>';
-            }
-            if (studentenTAaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="TA" onclick="switchMarkers(this)" checked="checked" /> <label for="TA">Tuin- en Akkerbouw</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="TA" onclick="geenStages(this)" /> <label for="TA" class="filterinactive">Tuin- en Akkerbouw</label></li>';
-            }
-            if (studentenTBaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="TB" onclick="switchMarkers(this)" checked="checked" /> <label for="TB">Toegepaste Biologie</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="TB" onclick="geenStages(this)" /> <label for="TB" class="filterinactive">Toegepaste Biologie</label></li>';
-            }
-            if (studentenVMaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="VM" onclick="switchMarkers(this)" checked="checked" /> <label for="VM">Voedingsmiddelen Technologie</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="VM" onclick="geenStages(this)" /> <label for="VM" class="filterinactive">Voedingsmiddelen Technologie</label></li>';
-            }
-            filterTekst += '</ul>';
-
-            //filterTekst += '<li><h4>Medewerkers</h4><ul>';
-            //if (medewerkersAantal > 0)
-            //{
-            //    filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="switchMarkers(this)" checked="checked" /> <label for="medewerkers">Medewerkers</li></ul>';
-            //}
-            //else
-            //{
-            //    filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="geenMedewerkers() class="filterinactive" /> <label for="medewerkers">Medewerkers</li></ul>';
-            //}
-            filterTekst += '</ul></div>';
+            filterTekst += '</ul></li><li id="opl" ><h4>Opleidingen</h4>';
+            filterTekst += '</div> </ul>';
             $('#kaart').append('<div id="filtermenu" onclick="showFilter()"><h4>Filter <i class="glyphicon glyphicon-chevron-right"></i></h4></div>');
             $('#kaart').append(filterTekst);
+            $.each(plaatsen.features, function (i, plaats) {
+                $('#opl').append('<ul><li id="' + plaats.properties.Afkorting_plaats + '" onclick="$(this).children().slideToggle()"><img src="/images/pijl_omlaag.png">' + plaats.properties.Plaats + '</li></ul>');
+            $.each(opleidingData.features, function (i, opleiding) {
+                if (opleiding.properties.Plaats == plaats.properties.Plaats) {
+                    if (studentAantallenArray[i] > 0) {
+                        $("#"+plaats.properties.Afkorting_plaats).append('<li class="subfilter"><input type="checkbox" id="' + opleiding.properties.Opledingscode + '" onclick="switchMarkers(this)" checked="checked" /> <label for="' + opleiding.properties.Opledingscode + '">' + opleiding.properties.Opleidingsnaam_nl + '</label></li>');
+                    }
+                    else {
+                        $("#"+plaats.properties.Afkorting_plaats).append('<li class="subfilter"><input type="checkbox" id="' + opleiding.properties.Opledingscode + '" onclick="geenStages(this)" /> <label for="' + opleiding.properties.Opledingscode + '" class="filterinactive">' + opleiding.properties.Opleidingsnaam_nl + '</label></li>');
+                    }
+                }
+            });
+            })
             hideFilter();
             break;
         case "EN":
@@ -759,109 +684,23 @@ function makeMenu ()
             filterTekst += '<ul><li><h4>Type of map</h4><ul>';
             filterTekst += '<li><input type="radio" name="achtergrond" id="grijs" onclick="switchAchtergrond(this)" checked="checked" /> <label for="grijs">Grey background</label></li>';
             filterTekst += '<li><input type="radio" name="achtergrond" id="satelliet" onclick="switchAchtergrond(this)" /> <label for="satelliet">Satellite views</label></li>';
-            filterTekst += '</ul></li><li><h4>Study Programmes</h4><ul>';
-            if (studentenBAaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="BA" onclick="switchMarkers(this)" checked="checked" /> <label for="BA">Business Administration &amp; Agribusiness</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="BA" onclick="geenStages(this)" /> <label for="BA" class="filterinactive">Business Administration &amp; Agribusiness</label></li>';
-            }
-            if (studentenDVaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="DV" onclick="switchMarkers(this)" checked="checked" /> <label for="DV">Animal Husbandry &amp; Animal Care</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="DV" onclick="geenStages(this)" /> <label for="DV" class="filterinactive">Animal Husbandry &amp; Animal Care</label></li>';
-            }
-            if (studentenFIaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="FI" onclick="switchMarkers(this)" checked="checked" /> <label for="FI">Food Innovation</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="FI" onclick="geenStages(this)" /> <label for="FI" class="filterinactive">Food Innovation</label></li>';
-            }
-            if (studentenGMaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="GM" onclick="switchMarkers(this)" checked="checked" /> <label for="GM">Geo Media &amp; Design</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="GM" onclick="geenStages(this)" /> <label for="GM" class="filterinactive">Geo Media & Design</label></li>';
-            }
-            if (studentenHBMaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="HBM" onclick="switchMarkers(this)" checked="checked" /> <label for="HBM">Horticulture &amp; Business Management</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="HBM" onclick="geenStages(this)" /> <label for="HBM" class="filterinactive">Horticulture &amp; Business Management</label></li>';
-            }
-            if (studentenIFaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="IF" onclick="switchMarkers(this)" checked="checked" /> <label for="IF">International Food &amp; Agribusiness</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="IF" onclick="geenStages(this)" /> <label for="IF" class="filterinactive">International Food &amp; Agribusiness</label></li>';
-            }
-            if (studentenMKaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="MK" onclick="switchMarkers(this)" checked="checked" /> <label for="MK">Environmental Studies</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="MK" onclick="geenStages(this)" /> <label for="MK" class="filterinactive">Environmental Studies</label></li>';
-            }
-            if (studentenMLaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="ML" onclick="switchMarkers(this)" checked="checked" /> <label for="ML">Spatial and Environmental Planning</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="ML" onclick="geenStages(this)" /> <label for="ML" class="filterinactive">Spatial and Environmental Planning</label></li>';
-            }
-            if (studentenTAaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="TA" onclick="switchMarkers(this)" checked="checked" /> <label for="TA">Horticulture & Arable Farming</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="TA" onclick="geenStages(this)" /> <label for="TA" class="filterinactive">Horticulture & Arable Farming</label></li>';
-            }
-            if (studentenTBaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="TB" onclick="switchMarkers(this)" checked="checked" /> <label for="TB">Applied Biology</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="TB" onclick="geenStages(this)" /> <label for="TB" class="filterinactive">Applied Biology</label></li>';
-            }
-            if (studentenVMaantal > 0)
-            {
-                filterTekst += '<li><input type="checkbox" id="VM" onclick="switchMarkers(this)" checked="checked" /> <label for="VM">Food Technology</label></li>';
-            }
-            else
-            {
-                filterTekst += '<li><input type="checkbox" id="VM" onclick="geenStages(this)" /> <label for="VM" class="filterinactive">Food Technology</label></li>';
-            }
-            filterTekst += '</ul>';
-
-            //filterTekst += '<li><h4>Staff</h4><ul>';
-            //if (medewerkersAantal > 0)
-            //{
-            //    filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="switchMarkers(this)" checked="checked" /> <label for="medewerkers">Staff</li></ul>';
-            //}
-            //else
-            //{
-            //    filterTekst += '<li><input type="checkbox" id="medewerkers" onclick="geenMedewerkers()" class="filterinactive" /> <label for="medewerkers">Staff</li></ul>';
-            //}
+            filterTekst += '</ul></li><li id="opl"><h4>Study Programmes</h4><ul>';
             filterTekst += '</ul></div>';
             $('#kaart').append('<div id="filtermenu" onclick="showFilter()"><h4>Filter <i class="glyphicon glyphicon-chevron-right"></i></h4></div>');
             $('#kaart').append(filterTekst);
+            $.each(plaatsen.features, function (i, plaats) {
+                $('#opl').append('<ul><li id="' + plaats.properties.Afkorting_plaats + '" onclick="$(this).children().slideToggle()"><img src="/images/pijl_omlaag.png">' + plaats.properties.Plaats + '</li></ul>');
+            $.each(opleidingData.features, function (i, opleiding) {
+                if (opleiding.properties.Plaats == plaats.properties.Plaats) {
+                    if (studentAantallenArray[i] > 0) {
+                        $("#"+plaats.properties.Afkorting_plaats).append('<li class="subfilter"><input type="checkbox" id="' + opleiding.properties.Opledingscode + '" onclick="switchMarkers(this)" checked="checked" /> <label for="' + opleiding.properties.Opledingscode + '">' + opleiding.properties.Opleidingsnaam_en + '</label></li>');
+                    }
+                    else {
+                        $("#"+plaats.properties.Afkorting_plaats).append('<li class="subfilter"><input type="checkbox" id="' + opleiding.properties.Opledingscode + '" onclick="geenStages(this)" /> <label for="' + opleiding.properties.Opledingscode + '" class="filterinactive">' + opleiding.properties.Opleidingsnaam_en + '</label></li>');
+                    }
+                }
+            });
+            })
             hideFilter();
             break;
     }
