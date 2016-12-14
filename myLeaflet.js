@@ -1,4 +1,5 @@
 var landenData;
+var geoserver = 'http://localhost:8080/geoserver';
 var opleidingData;
 var serviceName;
 var kaart;
@@ -57,7 +58,7 @@ var zoomOptions = {
 };
 
 $(document).ready(function () {
-    serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:tbl_Landen&outputFormat=application%2Fjson' };
+    serviceName = { url: geoserver+'/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:tbl_Landen&outputFormat=application%2Fjson' };
     $.ajax(
     {
         url: 'geoproxy.php',
@@ -67,7 +68,7 @@ $(document).ready(function () {
     })
     .done(function (data) {
         landenData = data;
-        serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Opleidingen&outputFormat=application%2Fjson' };
+        serviceName = { url: geoserver+'/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Opleidingen&outputFormat=application%2Fjson' };
         $.ajax(
         {
             url: 'geoproxy.php',
@@ -77,7 +78,7 @@ $(document).ready(function () {
         })
         .done(function (data) {
             opleidingData = data;
-            serviceName = { url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Unieke%20plaatsen&outputFormat=application%2Fjson' };
+            serviceName = { url: geoserver+'/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Unieke%20plaatsen&outputFormat=application%2Fjson' };
             $.ajax(
             {
                 url: 'geoproxy.php',
@@ -149,26 +150,26 @@ function getOpleidingNaam(opleidingcode)
 
 function showLegenda()
 {
-    $('#legendamenu').hide();
-    $('#legenda').show();
+    $('#legendamenu').fadeOut();
+    $('#legenda').fadeIn();
 }
 
 function hideLegenda()
 {
-    $('#legendamenu').show();
-    $('#legenda').hide();
+    $('#legendamenu').fadeIn();
+    $('#legenda').fadeOut();
 }
 
 function showFilter()
 {
-    $('#filtermenu').hide();
-    $('#filter').show();
+    $('#filtermenu').fadeOut();
+    $('#filter').fadeIn();
 }
 
 function hideFilter()
 {
-    $('#filtermenu').show();
-    $('#filter').hide();
+    $('#filtermenu').fadeIn();
+    $('#filter').fadeOut();
 }
 
 function switchAchtergrond(radio)
@@ -302,8 +303,13 @@ function initMap()
     });
     kaart.addControl(L.control.zoom({position: 'topright'}));
 
-    kaart.on('contextmenu', function(){
-        showFilter();
+    kaart.on('contextmenu', function () {
+        if ($("#filtermenu").css('display')=='block') {
+            showFilter();
+        }
+        else {
+            hideFilter();
+        }
     });
 
 
@@ -404,7 +410,7 @@ function initMap()
     //code die de markers clustert wanneer ze te dichtbij elkaar komen te staan
     studentenFVcluster = new L.FeatureGroup();
 
-    //serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Actuele%20medewerkers%20in%20het%20buitenland&outputFormat=application%2Fjson'};
+    //serviceName = {url: geoserver+'/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Actuele%20medewerkers%20in%20het%20buitenland&outputFormat=application%2Fjson'};
     ////Lezen JSON alle medewerkers
     //$.ajax(
     //{
@@ -431,13 +437,15 @@ function initMap()
     //});
 
     
-    serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Studies%20in%20het%20buitenland&outputFormat=application%2Fjson'};
+    serviceName = {url: geoserver+'/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Studies%20in%20het%20buitenland&outputFormat=application%2Fjson'};
     //Lezen JSON alle studies in het buitenland
     $.ajax(
     {
         url: 'geoproxy.php',
         dataType: 'json',
         method: 'post',
+        async : false,
+        timeout: 5000,
         data: serviceName
     })
     .done(function (data) {
@@ -514,7 +522,7 @@ function initMap()
          alert("Fout opgetreden bij laden buitenlandse studies");
      });
     
-    serviceName = {url: 'http://localhost:8080/geoserver/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:huidige%20stages&outputFormat=application%2Fjson'};
+    serviceName = {url: geoserver+'/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:huidige%20stages&outputFormat=application%2Fjson'};
     //Lezen JSON alle stages
     $.ajax(
     {
@@ -593,6 +601,8 @@ function initMap()
             }
             oms.addMarker(marker);
         });
+        studentAantallenArray = [studentenBAaantal, studentenBVaantal, studentenDVaantal, studentenFIaantal, studentenFVaantal, studentenGMaantal, studentenHBMaantal, studentenIFaantal, studentenIVaantal, studentenMKaantal, studentenMLaantal, studentenTAaantal, studentenTBaantal, studentenTVaantal, studentenVMaantal];
+        console.log(studentAantallenArray);
         makeMenu();
     })
     .fail(function () {
@@ -645,8 +655,6 @@ function initZoom()
 
 function makeMenu ()
 {
-   studentAantallenArray=[studentenBAaantal, studentenBVaantal, studentenDVaantal, studentenFIaantal, studentenFVaantal, studentenGMaantal, studentenHBMaantal, studentenIFaantal, studentenMKaantal, studentenMLaantal, studentenTAaantal, studentenTBaantal, studentenTVaantal, studentenVMaantal, studentenIVaantal];
-
     switch (taal)
     {
         case "NL":
