@@ -670,7 +670,7 @@ function makeMenu ()
             $('#kaart').append('<div id="filtermenu" onclick="showFilter()"><h4>Filter <i class="glyphicon glyphicon-chevron-right"></i></h4></div>');
             $('#kaart').append(filterTekst);
             $.each(plaatsen.features, function (i, plaats) {
-                $('#opl').append('<ul><li id="' + plaats.properties.Afkorting_plaats + '" onclick="$(this).children().slideToggle()"><img src="/images/pijl_omlaag.png">' + plaats.properties.Plaats + '</li></ul>');
+                $('#opl').append('<ul><li id="' + plaats.properties.Afkorting_plaats + '" onclick="$(this).children().slideToggle()"><i class="glyphicon glyphicon-chevron-right"></i>' + plaats.properties.Plaats + '</li></ul>');
             $.each(opleidingData.features, function (i, opleiding) {
                 if (opleiding.properties.Plaats == plaats.properties.Plaats) {
                     if (studentAantallenArray[i] > 0) {
