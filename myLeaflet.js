@@ -1,4 +1,30 @@
 var landenData;
+
+    //collectie van alle iconen die een standaard grootte meekrijgen
+    var LeafIcon = L.Icon.extend({
+        options : {
+            iconSize : [32, 32]
+        }
+    });
+
+        //eigen  iconen, bij de iconUrl kun je eventueel een andere icoon meegeven
+    var stageIcon = new LeafIcon({
+        iconUrl : 'images/Stage.png',
+        iconSize : [32, 32],
+        iconAnchor : [15, 32]
+    });
+
+    //var medewerkerIcon = new LeafIcon({
+    //    iconUrl : 'images/Medewerker.png',
+    //    iconSize : [32, 32],
+    //    iconAnchor : [15, 32]
+    //});
+
+    var studentIcon = new LeafIcon({
+        iconUrl : 'images/Studie.png',
+        iconSize : [32, 32],
+        iconAnchor : [15, 32]
+    });
 var geoserver = 'http://localhost:8080/geoserver';
 var opleidingData;
 var serviceName;
@@ -22,6 +48,7 @@ var studentenBVcluster;
 var studentenFVcluster;
 var studentenIVcluster;
 var studentenTVcluster;
+var studentenClustersNu = [];
 var studentenBVaantal=0;
 var studentenFVaantal=0;
 var studentenIVaantal=0;
@@ -327,31 +354,6 @@ function initMap()
     });
 
 
-    //collectie van alle iconen die een standaard grootte meekrijgen
-    var LeafIcon = L.Icon.extend({
-        options : {
-            iconSize : [32, 32]
-        }
-    });
-
-        //eigen  iconen, bij de iconUrl kun je eventueel een andere icoon meegeven
-    var stageIcon = new LeafIcon({
-        iconUrl : 'images/Stage.png',
-        iconSize : [32, 32],
-        iconAnchor : [15, 32]
-    });
-
-    //var medewerkerIcon = new LeafIcon({
-    //    iconUrl : 'images/Medewerker.png',
-    //    iconSize : [32, 32],
-    //    iconAnchor : [15, 32]
-    //});
-
-    var studentIcon = new LeafIcon({
-        iconUrl : 'images/Studie.png',
-        iconSize : [32, 32],
-        iconAnchor : [15, 32]
-    });
     //medewerkersLayer = new L.FeatureGroup();
 
 
@@ -682,6 +684,7 @@ function makeMenu ()
                 }
             });
             })
+            $("#filter").append('<div id="filterdatums"><h4>Filter datum</h4><input type="radio" name="formToggle" id="andereDamums" onclick="formToggle(this)"/> <label for="andereDamums">Andere datums</label><br><input type="radio" id="nu" name="formToggle" checked onclick="formToggle(this)" /><label for="nu">Nu</label> <form id="datumCustomForm"><h4>Voer twee datums in om op te filteren</h4><ul><li><input type="date" id="start" name="start"></li><li><input type="date" id="end" name="end"></li><li><input type="button" name="fiter" value="Filter" onclick="aangepasteDatumFilter()"></li></ul></form></div>');
             hideFilter();
             break;
         case "EN":
@@ -697,7 +700,7 @@ function makeMenu ()
             $('#kaart').append('<div id="filtermenu" onclick="showFilter()"><h4>Filter <i class="glyphicon glyphicon-chevron-right"></i></h4></div>');
             $('#kaart').append(filterTekst);
             $.each(plaatsen.features, function (i, plaats) {
-                $('#opl').append('<ul><li id="' + plaats.properties.Afkorting_plaats + '" onclick="$(this).children().slideToggle()"><img src="/images/pijl_omlaag.png">' + plaats.properties.Plaats + '</li></ul>');
+                $('#opl').append('<ul><li id="' + plaats.properties.Afkorting_plaats + '" onclick="$(this).children().slideToggle()"><i class="glyphicon glyphicon-chevron-right"></i>' + plaats.properties.Plaats + '</li></ul>');
             $.each(opleidingData.features, function (i, opleiding) {
                 if (opleiding.properties.Plaats == plaats.properties.Plaats) {
                     if (studentAantallenArray[i] > 0) {
@@ -709,7 +712,259 @@ function makeMenu ()
                 }
             });
             })
+            $("#filter").append('<div id="filterdatums"><h4>Filter date</h4><input type="radio" name="formToggle" id="andereDamums" onclick="formToggle(this)"/> <label for="andereDamums">Other dates</label><br><input type="radio" id="nu" name="formToggle" checked onclick="formToggle(this)" /><label for="nu">Now</label> <form id="datumCustomForm"><h4>Enter two dates to filter by</h4><ul><li><input type="date" id="start" name="start"></li><li><input type="date" id="end" name="end"></li><li><input type="button" name="fiter" value="Filter" onclick="aangepasteDatumFilter()"></li></ul></form></div>');
             hideFilter();
             break;
     }
+}
+function formToggle(radio)
+{
+    if (radio.checked && radio.id == "andereDamums")
+    {
+        $("#datumCustomForm").fadeIn("Slow");
+    }
+    if (radio.checked && radio.id == "nu")
+    {
+        $("#datumCustomForm").fadeOut("Slow");
+    }
+}
+function aangepasteDatumFilter()
+{
+    var start=$("#start").val();
+    var end = $("#end").val();
+    if(start>end)
+    {
+        alert("Begindatum moet vóór einddatum liggen");
+        return false;
+    }
+    else if(start=='' || end=='')
+    {
+        alert("Vul beide velden in");
+        return false;
+    }
+    if(studentenClustersNu.length==0)
+    {
+    studentenClustersNu.push(studentenBAcluster, studentenBVcluster, studentenDVcluster, studentenFIcluster, studentenFVcluster, studentenGMcluster, studentenHBMcluster, studentenIFcluster, studentenMKcluster, studentenMLcluster, studentenTAcluster, studentenTBcluster, studentenTVcluster, studentenVMcluster, studentenIVcluster);
+    }
+    studentenBAcluster.clearLayers();
+    studentenBVcluster.clearLayers();
+    studentenDVcluster.clearLayers();
+    studentenFIcluster.clearLayers();
+    studentenFVcluster.clearLayers();
+    studentenGMcluster.clearLayers();
+    studentenHBMcluster.clearLayers();
+    studentenIFcluster.clearLayers();
+    studentenMKcluster.clearLayers();
+    studentenMLcluster.clearLayers();
+    studentenTAcluster.clearLayers();
+    studentenTBcluster.clearLayers();
+    studentenTVcluster.clearLayers();
+    studentenVMcluster.clearLayers();
+    studentenIVcluster.clearLayers();
+    studentenBVaantal=0;
+    studentenFVaantal=0;
+    studentenIVaantal=0;
+    studentenTVaantal=0;
+    studentenBAaantal = 0;
+    studentenDVaantal = 0;
+    studentenFIaantal = 0;
+    studentenGMaantal = 0;
+    studentenHBMaantal = 0;
+    studentenIFaantal = 0;
+    studentenMKaantal = 0;
+    studentenMLaantal = 0;
+    studentenTAaantal = 0;
+    studentenTBaantal = 0;
+    studentenVMaantal = 0;
+
+    serviceName = {url: geoserver+"/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Studies%20aangepaste%20datums&viewparams=start:"+start+";end:"+end+"&outputFormat=application%2Fjson"};
+    //Lezen JSON alle studies in het buitenland
+    $.ajax(
+    {
+        url: 'geoproxy.php',
+        dataType: 'json',
+        method: 'post',
+        async : false,
+        timeout: 5000,
+        data: serviceName
+    })
+    .done(function (data) {
+        $.each(data.features, function (i, student) {
+            var marker = new L.Marker([student.properties.Latitude, student.properties.Longitude], {
+                icon: studentIcon
+            }).bindPopup(student.properties.Voornaam + " " + student.properties.Tussenvoegsel + " " + student.properties.Achternaam + "<br>" + student.properties.Instelling_naam + "<br>" + student.properties.Plaats + "<br>" + getLandNaam(student.properties.Landcode) + "<br>" + getOpleidingNaam(student.properties.Opleidingscode), { offset: popupOffset });
+            switch (student.properties.Opleidingscode) {
+                case 'BA':
+                    studentenBAcluster.addLayer(marker);
+                    studentenBAaantal++;
+                    break;
+                case 'BV':
+                    studentenBVcluster.addLayer(marker);
+                    studentenBVaantal++;
+                    break;
+                case 'DV':
+                    studentenDVcluster.addLayer(marker);
+                    studentenDVaantal++;
+                    break;
+                case 'FI':
+                    studentenFIcluster.addLayer(marker);
+                    studentenFIaantal++;
+                    break;
+                case 'FV':
+                    studentenFVcluster.addLayer(marker);
+                    studentenFVaantal++;
+                    break;
+                case 'GM':
+                    studentenGMcluster.addLayer(marker);
+                    studentenGMaantal++;
+                    break;
+                case 'HBM':
+                    studentenHBMcluster.addLayer(marker);
+                    studentenHBMaantal++;
+                    break;
+                case 'IF':
+                    studentenIFcluster.addLayer(marker);
+                    studentenIFaantal++;
+                    break;
+                case 'MK':
+                    studentenMKcluster.addLayer(marker);
+                    studentenMKaantal++;
+                    break;
+                case 'ML':
+                    studentenMLcluster.addLayer(marker);
+                    studentenMLaantal++;
+                    break;
+                case 'TA':
+                    studentenTAcluster.addLayer(marker);
+                    studentenTAaantal++;
+                    break;
+                case 'TB':
+                    studentenTBcluster.addLayer(marker);
+                    studentenTBaantal++;
+                    break;
+                case 'TV':
+                    studentenTVcluster.addLayer(marker);
+                    studentenTVaantal++;
+                    break;
+                case 'VM':
+                    studentenVMcluster.addLayer(marker);
+                    studentenVMaantal++;
+                    break;
+                case 'IV':
+                    studentenIVcluster.addLayer(marker);
+                    studentenIVaantal++;
+                    break;
+            }
+            oms.addMarker(marker);
+        });
+    })
+     .fail(function () {
+         alert("Fout opgetreden bij laden buitenlandse studies");
+     });
+    
+    serviceName = {url: geoserver+"/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:aangepaste%20datums%20stage&viewparams=start:"+start+";end:"+end+"&outputFormat=application%2Fjson"};
+    //Lezen JSON alle stages
+    $.ajax(
+    {
+        url: 'geoproxy.php',
+        dataType: 'json',
+        method: 'post',
+        data: serviceName
+    })
+    .done(function (data) {
+        $.each(data.features, function (i, stages) {
+            var marker = new L.Marker([stages.properties.Latitude, stages.properties.Longitude], {
+                icon: stageIcon
+            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Tussenvoegsel + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
+            switch (stages.properties.Opleidingscode) {
+                case 'BA':
+                    studentenBAcluster.addLayer(marker);
+                    studentenBAaantal++;
+                    break;
+                case 'BV':
+                    studentenBVcluster.addLayer(marker);
+                    studentenBVaantal++;
+                    break;
+                case 'DV':
+                    studentenDVcluster.addLayer(marker);
+                    studentenDVaantal++;
+                    break;
+                case 'FI':
+                    studentenFIcluster.addLayer(marker);
+                    studentenFIaantal++;
+                    break;
+                case 'FV':
+                    studentenFVcluster(marker);
+                    studentenFVaantal++;
+                    break;
+                case 'GM':
+                    studentenGMcluster.addLayer(marker);
+                    studentenGMaantal++;
+                    break;
+                case 'HBM':
+                    studentenHBMcluster.addLayer(marker);
+                    studentenHBMaantal++;
+                    break;
+                case 'IF':
+                    studentenIFcluster.addLayer(marker);
+                    studentenIFaantal++;
+                    break;
+                case 'MK':
+                    studentenMKcluster.addLayer(marker);
+                    studentenMKaantal++;
+                    break;
+                case 'ML':
+                    studentenMLcluster.addLayer(marker);
+                    studentenMLaantal++;
+                    break;
+                case 'TA':
+                    studentenTAcluster.addLayer(marker);
+                    studentenTAaantal++;
+                    break;
+                case 'TB':
+                    studentenTBcluster.addLayer(marker);
+                    studentenTBaantal++;
+                    break;
+                case 'TV':
+                    studentenTVcluster.addLayer(marker);
+                    studentenTVaantal++;
+                    break;
+                case 'VM':
+                    studentenVMcluster.addLayer(marker);
+                    studentenVMaantal++;
+                    break;
+                case 'IV':
+                    studentenIVcluster.addLayer(marker);
+                    studentenIVaantal++;
+                    break;
+
+            }
+            oms.addMarker(marker);
+        });
+        studentAantallenArray = [studentenBAaantal, studentenBVaantal, studentenDVaantal, studentenFIaantal, studentenFVaantal, studentenGMaantal, studentenHBMaantal, studentenIFaantal, studentenIVaantal, studentenMKaantal, studentenMLaantal, studentenTAaantal, studentenTBaantal, studentenTVaantal, studentenVMaantal];
+        $("#legenda").remove();
+        $("#legendamenu").remove();
+        $("#filter").remove();
+        $("#filtermenu").remove();
+        makeMenu();
+    })
+    .fail(function () {
+        alert("fout opgetreden bij laden van stages uit database");
+    });
+    kaart.addLayer(studentenBAcluster);
+    kaart.addLayer(studentenDVcluster);
+    kaart.addLayer(studentenFIcluster);
+    kaart.addLayer(studentenGMcluster);
+    kaart.addLayer(studentenHBMcluster);
+    kaart.addLayer(studentenIFcluster);
+    kaart.addLayer(studentenMKcluster);
+    kaart.addLayer(studentenMLcluster);
+    kaart.addLayer(studentenTAcluster);
+    kaart.addLayer(studentenTBcluster);
+    kaart.addLayer(studentenVMcluster);
+    kaart.addLayer(studentenIVcluster);
+    kaart.addLayer(studentenBVcluster);
+    kaart.addLayer(studentenTVcluster);
+    kaart.addLayer(studentenFVcluster);
+    //kaart.addLayer(medewerkersLayer);
 }
