@@ -238,7 +238,8 @@
                 });
             });
 		</script>
-
+        <div id="dialogoverlay"></div> 
+        <div id="datumCustomForm"><form><i class="glyphicon glyphicon-remove-circle" onclick='hideCustomDatumFilter();$("#nu").prop("checked", true);'></i><h4>Enter two dates to filter by</h4><ul><li><input type="date" id="start" name="start"></li><li><input type="date" id="end" name="end"></li><li><input type="button" name="fiter" value="Filter" onclick="aangepasteDatumFilter()"></li></ul></form></div>
 	</body>
 
 </html>

@@ -1,6 +1,16 @@
 #kaart {
 	margin-top: 100px;
 }
+#dialogoverlay{
+	display: none;
+	opacity: .6;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	background: #FFF;
+	width: 100%;
+	z-index: 100;
+}
 
 .gedimd {
 	opacity: 0.5;
@@ -28,7 +38,25 @@
 .start_page_caption_tekst {
 	opacity: 1.0;
 }
-
+#datumCustomForm
+{
+    width: 250px;
+    display: none;
+    background-color: #222222;
+    z-index: 100;
+    position: fixed;
+    color: #dddddd;
+    border: 3px solid #999999;
+}
+#datumCustomForm ul
+{
+	list-style-type: none;
+}
+input[type=button]
+{
+    color: #222222;
+    width: auto;
+}
 body {
 	overflow: hidden;
 }
