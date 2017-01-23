@@ -111,19 +111,40 @@ $(document).ready(function () {
                 initMap();
             })
             .fail(function () {
-                alert('plaatsen json niet opgehaald');
+                if(taal=="NL")
+                {
+                BootstrapDialog.alert('plaatsen json niet opgehaald uit database');
+                }
+                else if(taal=="EN")
+                {
+                BootstrapDialog.alert('places json not retrieved from database');
+                }
             });
         })
         .fail(function () {
-            alert("Opleidingen json niet opgehaald");
+            if(taal=="NL")
+            {
+            BootstrapDialog.alert("Opleidingen json niet opgehaald uit database");
+            }
+            else if(taal=="EN")
+            {
+            BootstrapDialog.alert("Study Programmes json not retrieved from database");    
+            }
         });
     })
     .fail(function () {
-        alert("Landen json niet opgehaald");
+        if(taal=="NL")
+        {
+        BootstrapDialog.alert("Landen json niet opgehaald uit database");
+        }
+        else if(taal=="EN")
+        {
+        BootstrapDialog.alert("Countries json not retrieved from database");
+        }
     });
 
 });
-function kaartReset()
+function kaartReset() // haalt alle markers weg
     {
     studentenBAcluster.clearLayers();
     studentenBVcluster.clearLayers();
@@ -157,7 +178,7 @@ function kaartReset()
     studentenVMaantal = 0;
     }
 
-    function menuReset()
+    function menuReset() // reset alle opleiding filters in het filtermenu
     {
         $("#opl").empty();
         if (taal == "NL") {
@@ -590,7 +611,14 @@ function initMap()
         });
     })
      .fail(function () {
-         alert("Fout opgetreden bij laden buitenlandse studies");
+         if(taal=="NL")
+         {
+         BootstrapDialog.alert("Fout opgetreden bij laden studies in het buitenland");
+         }
+         else if(taal=="En")
+         {
+         BootstrapDialog.alert("Error occurred while loading minors abroad");
+         }
      });
     
     serviceName = {url: geoserver+'/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:huidige%20stages&outputFormat=application%2Fjson'};
@@ -606,7 +634,7 @@ function initMap()
         $.each(data.features, function (i, stages) {
             var marker = new L.Marker([stages.properties.Latitude, stages.properties.Longitude], {
                 icon: stageIcon
-            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Tussenvoegsel + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
+            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Tussenvoegsel+ " " + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
             switch (stages.properties.Opleidingscode) {
                 case 'BA':
                     studentenBAcluster.addLayer(marker);
@@ -677,7 +705,14 @@ function initMap()
         makeMenu();
     })
     .fail(function () {
-        alert("fout opgetreden bij laden van stages uit database");
+        if(taal=="NL")
+        {
+        BootstrapDialog.alert("Fout opgetreden bij laden van stages uit database");
+        }
+        else if(taal=="EN")
+        {
+         BootstrapDialog.alert("Error occurred while loading internships from database");
+        }
     });
 
     kaart.addLayer(studentenBAcluster);
@@ -788,7 +823,7 @@ function makeMenu ()
 }
 function formToggle(radio)
 {
-var posleftDatumForm = (window.innerWidth / 2) - 250 + 'px';
+var posleftDatumForm = (window.innerWidth / 2) - 300 + 'px';
 var postopDatumForm = window.innerHeight / 2 + 'px';
 
     if (radio.checked && radio.id == "andereDamums")
@@ -810,13 +845,29 @@ function aangepasteDatumFilter()
     var end = $("#end").val();
     if(start>end)
     {
-        alert("Begindatum moet vóór einddatum liggen");
+        if(taal=="NL")
+        {
+        BootstrapDialog.alert("Begindatum moet vóór einddatum liggen");
         return false;
+        }
+        else if(taal=="EN")
+        {
+        BootstrapDialog.alert("Start date must be before end date");
+        return false;
+        }
     }
     else if(start=='' || end=='')
     {
-        alert("Vul beide velden in");
+        if(taal=="NL")
+        {
+        BootstrapDialog.alert("Vul beide velden in");
         return false;
+        }
+        else if(taal=="EN")
+        {
+        BootstrapDialog.alert("Fill out both field");
+        return false;
+        }
     }
     kaartReset();
     serviceName = {url: geoserver+"/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:Studies%20aangepaste%20datums&viewparams=start:"+start+";end:"+end+"&outputFormat=application%2Fjson"};
@@ -901,7 +952,14 @@ function aangepasteDatumFilter()
         });
     })
      .fail(function () {
-         alert("Fout opgetreden bij laden buitenlandse studies");
+         if(taal=="NL")
+         {
+         BootstrapDialog.alert("Fout opgetreden bij laden studies in het buitenland");
+         }
+         else if(taal=="EN")
+         {
+         BootstrapDialog.alert("Error occurred while loading minors abroad");
+         }
      });
     
     serviceName = {url: geoserver+"/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:aangepaste%20datums%20stage&viewparams=start:"+start+";end:"+end+"&outputFormat=application%2Fjson"};
@@ -917,7 +975,7 @@ function aangepasteDatumFilter()
         $.each(data.features, function (i, stages) {
             var marker = new L.Marker([stages.properties.Latitude, stages.properties.Longitude], {
                 icon: stageIcon
-            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Tussenvoegsel + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
+            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Tussenvoegsel+ " " + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
             switch (stages.properties.Opleidingscode) {
                 case 'BA':
                     studentenBAcluster.addLayer(marker);
@@ -987,7 +1045,14 @@ function aangepasteDatumFilter()
         menuReset();
     })
     .fail(function () {
-        alert("fout opgetreden bij laden van stages uit database");
+       if(taal=="NL")
+        {
+        BootstrapDialog.alert("Fout opgetreden bij laden van stages uit database");
+        }
+        else if(taal=="EN")
+        {
+         BootstrapDialog.alert("Error occurred while loading internships from database");
+        }
     });
     kaart.addLayer(studentenBAcluster);
     kaart.addLayer(studentenDVcluster);
@@ -1092,7 +1157,14 @@ function nu()
         });
     })
      .fail(function () {
-         alert("Fout opgetreden bij laden buitenlandse studies");
+         if(taal=="NL")
+         {
+         BootstrapDialog.alert("Fout opgetreden bij laden studies in het buitenland");
+         }
+         else if(taal=="EN")
+         {
+         BootstrapDialog.alert("Error occurred while loading minors abroad");
+         }
      });
     
     serviceName = {url: geoserver+'/Internationale-kaart/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=Internationale-kaart:huidige%20stages&outputFormat=application%2Fjson'};
@@ -1108,7 +1180,7 @@ function nu()
         $.each(data.features, function (i, stages) {
             var marker = new L.Marker([stages.properties.Latitude, stages.properties.Longitude], {
                 icon: stageIcon
-            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Tussenvoegsel + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
+            }).bindPopup(stages.properties.Voornaam + " " + stages.properties.Tussenvoegsel+ " " + stages.properties.Achternaam + "<br>" + stages.properties.Instelling_naam + "<br>" + stages.properties.Plaats + "<br>" + getLandNaam(stages.properties.Landcode) + "<br>" + getOpleidingNaam(stages.properties.Opleidingscode), { offset: popupOffset });
             switch (stages.properties.Opleidingscode) {
                 case 'BA':
                     studentenBAcluster.addLayer(marker);
@@ -1178,6 +1250,13 @@ function nu()
         menuReset();
     })
     .fail(function () {
-        alert("fout opgetreden bij laden van stages uit database");
+        if(taal=="NL")
+        {
+        BootstrapDialog.alert("Fout opgetreden bij laden van stages uit database");
+        }
+        else if(taal=="EN")
+        {
+         BootstrapDialog.alert("Error occurred while loading internships from database");
+        }
     });
 }

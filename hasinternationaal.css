@@ -40,17 +40,13 @@
 }
 #datumCustomForm
 {
-    width: 250px;
+    width: 300px;
     display: none;
     background-color: #222222;
     z-index: 100;
     position: fixed;
     color: #dddddd;
     border: 3px solid #999999;
-}
-#datumCustomForm ul
-{
-	list-style-type: none;
 }
 input[type=button]
 {
