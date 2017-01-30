@@ -865,7 +865,7 @@ function aangepasteDatumFilter()
         }
         else if(taal=="EN")
         {
-        BootstrapDialog.alert("Fill out both field");
+        BootstrapDialog.alert("Fill out both fields");
         return false;
         }
     }
